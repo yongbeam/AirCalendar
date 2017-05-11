@@ -80,6 +80,33 @@ Airbnb-style calendar
 ```
 
 
+### Customization ( by CalendarListview )
+
+CalendarListview is fully customizable:
+
+* app:colorCurrentDay [color def:#ff999999] --> The current day is always in bold but you can change its color
+* app:colorSelectedDayBackground [color def:#E75F49] --> If you click on a day, a circle indicator or a rouded rectangle indicator will be draw.
+* app:colorSelectedDayText [color def:#fff2f2f2] --> This is the text color of a selected day
+* app:colorPreviousDay [color def:#ff999999] --> In the current month you can choose to have a specific color for the past days
+* app:colorNormalDay [color def:#ff999999] --> Default text color for a day
+* app:colorMonthName [color def:#ff999999] --> Month name and year text color
+* app:colorDayName [color def:#ff999999] --> Day name text color
+* app:textSizeDay [dimension def:16sp] --> Font size for numeric day
+* app:textSizeMonth [dimension def:16sp] --> Font size for month name
+* app:textSizeDayName [dimension def:10sp] --> Font size for day name
+* app:headerMonthHeight [dimension def:50dip] --> Height of month name
+* app:drawRoundRect [boolean def:false] --> Draw a rounded rectangle for selected days instead of a circle
+* app:selectedDayRadius [dimension def:16dip] --> Set radius if you use default circle indicator
+* app:calendarHeight [dimension def:270dip] --> Height of each month/row
+* app:enablePreviousDay [boolean def:true] --> Enable past days in current month
+* app:currentDaySelected [boolean def:false] --> Select current day by default
+* app:firstMonth [enum def:-1] --> Start listview at the specified month
+* app:lastMonth [enum def:-1] --> End listview at the specified month
+
+
+### Customization2 
+* [Sample Activity](https://github.com/yongbeam/AirCalendar/blob/master/AirCalendar/src/main/java/com/yongbeom/aircalendar/AirCalendarDatePickerActivity.java)
+
 
 ## Thanks
 >* [CalendarListview](https://github.com/traex/CalendarListview)
