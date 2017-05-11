@@ -24,10 +24,8 @@
  ***********************************************************************************/
 package com.yongbeom.aircalendar;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -86,8 +84,6 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     private boolean isSelect = false;
     private boolean isBooking = false;
     private boolean isMonthLabel = false;
-    private boolean isOk = false;
-    private boolean isReset = false;
     private ArrayList<String> dates;
     private selectDateModel selectDate;
 
@@ -178,22 +174,14 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
                     SELECT_START_DATE = "";
                     SELECT_END_DATE = "";
                 }else{
-                    if(FLAG.equals("all")){
-                        if(SELECT_START_DATE == null || SELECT_START_DATE.equals("")){
-                            tv_popup_msg.setText("날짜를 모두 선택해주세요.");
-                            rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
-                            return;
-                        }else if(SELECT_END_DATE == null || SELECT_END_DATE.equals("")){
-                            tv_popup_msg.setText("체크아웃 날짜를 선택해주세요.");
-                            rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
-                            return;
-                        }
-                    }else{
-                        if(SELECT_START_DATE == null || SELECT_START_DATE.equals("")){
-                            tv_popup_msg.setText("날짜를 모두 선택해주세요.");
-                            rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
-                            return;
-                        }
+                    if(SELECT_START_DATE == null || SELECT_START_DATE.equals("")){
+                        tv_popup_msg.setText("Please select all dates.");
+                        rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
+                        return;
+                    }else if(SELECT_END_DATE == null || SELECT_END_DATE.equals("")){
+                        tv_popup_msg.setText("Please select all dates.");
+                        rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
+                        return;
                     }
                 }
 
@@ -214,7 +202,6 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         rl_reset_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isReset = true;
                 SELECT_START_DATE = "";
                 SELECT_END_DATE = "";
                 setContentView(R.layout.aicalendar_activity_date_picker);
@@ -244,115 +231,15 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
     @Override
     public void onDayOfMonthSelected(int year, int month, int day) {
-        String dateDay = "";
-        String setDate = "";
 
-        try{
-            String month_str = (month+1)+"";
-            String yyyy_str = year+"";
-            String day_str = day+"";
-
-            if((month+1) < 10){
-                month_str = "0"+month_str;
-            }
-
-            if(day < 10){
-                day_str = "0"+day_str;
-            }
-
-            setDate = yyyy_str+month_str+day_str;
-            dateDay = AirCalendarUtils.getDateDay(setDate , "yyyyMMdd");
-        }catch (Exception e){
-
-        }
-
-
-        if(FLAG.equals("start")){
-            tv_start_date.setTextColor(0xff4a4a4a);
-
-            String month_str = (month+1)+"";
-            if((month+1) < 10){
-                month_str = "0"+month_str;
-            }
-
-            String day_str = day+"";
-            if(day < 10){
-                day_str = "0"+day_str;
-            }
-            tv_start_date.setText(year+"-"+month_str+"-"+day_str+" "+dateDay);
-            SELECT_START_DATE = year+"-"+month_str+"-"+day_str+"";
-        }else if(FLAG.equals("end")){
-            tv_end_date.setTextColor(0xff4a4a4a);
-
-            String month_str = (month+1)+"";
-            if((month+1) < 10){
-                month_str = "0"+month_str;
-            }
-
-            String day_str = day+"";
-            if(day < 10){
-                day_str = "0"+day_str;
-            }
-            tv_end_date.setText(year+"-"+month_str+"-"+day_str+" "+dateDay);
-            SELECT_START_DATE = year+"-"+month_str+"-"+day_str+"";
-        }else if(FLAG.equals("all")){
-
-            if(SELECT_END_DATE != null || !SELECT_END_DATE.equals("")){
-                // 체크아웃 날짜가 있으면 모두 리셋
-                SELECT_START_DATE = "";
-                SELECT_END_DATE = "";
-                tv_start_date.setText("날짜선택");
-                tv_start_date.setTextColor(0xff1abc9c);
-                tv_end_date.setText("날짜선택");
-                tv_end_date.setTextColor(0xff1abc9c);
-
-
-                // 초기화 하고 체크인 날짜 셋
-                tv_start_date.setTextColor(0xff4a4a4a);
-                String month_str = (month+1)+"";
-                if((month+1) < 10){
-                    month_str = "0"+month_str;
-                }
-
-                String day_str = day+"";
-                if(day < 10){
-                    day_str = "0"+day_str;
-                }
-                SELECT_START_DATE = year+"-"+month_str+"-"+day_str;
-                tv_start_date.setText(year+"-"+month_str+"-"+day_str+" "+dateDay);
-
-            }else if(SELECT_START_DATE != null && !SELECT_START_DATE.equals("")){
-                // 시작 날짜가 있으면 체크아웃 날짜만 리셋
-                SELECT_END_DATE = "";
-                tv_end_date.setText("날짜선택");
-                tv_end_date.setTextColor(0xff1abc9c);
-
-
-                // 선택됬으니 체크아웃 날짜 셋
-                tv_end_date.setTextColor(0xff4a4a4a);
-                String month_str = (month+1)+"";
-                if((month+1) < 10){
-                    month_str = "0"+month_str;
-                }
-
-                String day_str = day+"";
-                if(day < 10){
-                    day_str = "0"+day_str;
-                }
-                tv_end_date.setText(year+"-"+month_str+"-"+day_str+" "+dateDay);
-
-            }
-        }
     }
 
     @Override
     public void onDateRangeSelected(SimpleMonthAdapter.SelectedDays<SimpleMonthAdapter.CalendarDay> selectedDays) {
 
-
         try{
             Calendar cl = Calendar.getInstance();
 
-            // 체크인
             cl.setTimeInMillis(selectedDays.getFirst().getDate().getTime());
             String start_month_str = (cl.get(Calendar.MONTH)+1)+"";
             if((cl.get(Calendar.MONTH)+1) < 10){
@@ -367,85 +254,22 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             String startDateDay = AirCalendarUtils.getDateDay(startSetDate , "yyyyMMdd");
             String startDate = cl.get(Calendar.YEAR) + "-" + start_month_str + "-" + start_day_str;
 
-            // 체크아웃
             cl.setTimeInMillis(selectedDays.getLast().getDate().getTime());
-            String end_month_str = (cl.get(Calendar.MONTH)+1)+"";
-            if((cl.get(Calendar.MONTH)+1) < 10){
-                end_month_str = "0"+end_month_str;
-            }
-
-            String end_day_str = cl.get(Calendar.DAY_OF_MONTH)+"";
-            if(cl.get(Calendar.DAY_OF_MONTH) < 10){
-                end_day_str = "0"+end_day_str;
-            }
-            String endSetDate = cl.get(Calendar.YEAR)+end_month_str+end_day_str;
+            String endSetDate = cl.get(Calendar.YEAR)+start_month_str+start_day_str;
             String endDateDay = AirCalendarUtils.getDateDay(endSetDate , "yyyyMMdd");
-            String endDate = cl.get(Calendar.YEAR) + "-" + end_month_str + "-" + end_day_str;
+            String endDate = cl.get(Calendar.YEAR) + "-" + start_month_str + "-" + start_day_str;
+
+            tv_start_date.setText(startDate + " " + startDateDay);
+            tv_start_date.setTextColor(0xff4a4a4a);
+
+            tv_end_date.setText(endDate + " " + endDateDay);
+            tv_end_date.setTextColor(0xff4a4a4a);
 
             SELECT_START_DATE = startDate;
             SELECT_END_DATE = endDate;
 
-            if(SELECT_START_DATE.equals(SELECT_END_DATE)){
-                // 같은날짜 선택시 리셋
-                SELECT_START_DATE = "";
-                SELECT_END_DATE = "";
-
-                tv_start_date.setText("날짜선택");
-                tv_start_date.setTextColor(0xff1abc9c);
-
-                tv_end_date.setText("날짜선택");
-                tv_end_date.setTextColor(0xff1abc9c);
-            }else{
-                isOk = true;
-                if(isBooking){
-                    for (int i = 0; i < dates.size(); i++) {
-                        if (startDate != null && endDate != null) {
-                            if (!AirCalendarUtils.checkStartDateToEndDate(startDate, endDate)) {
-                                try {
-                                    int date_cnt = AirCalendarUtils.getDiffDay(startDate, endDate);
-                                    for (int k = 1; k < date_cnt; k++) {
-                                        if(dates.get(i).equals(AirCalendarUtils.getAfterDate(startDate, k))){
-                                            isOk = false;
-                                            AlertDialog.Builder ab = new AlertDialog.Builder(AirCalendarDatePickerActivity.this);
-                                            ab.setMessage("이미 예약이 완료된 날짜입니다.\n다시 선택해주세요.");
-                                            ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
-                                            ab.show();
-
-                                            break;
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-                if(isOk){
-                    tv_start_date.setText(startDate + " " + startDateDay);
-                    tv_start_date.setTextColor(0xff4a4a4a);
-
-                    tv_end_date.setText(endDate + " " + endDateDay);
-                    tv_end_date.setTextColor(0xff4a4a4a);
-                }else{
-                    SELECT_START_DATE = "";
-                    SELECT_END_DATE = "";
-
-                    tv_start_date.setText("날짜선택");
-                    tv_start_date.setTextColor(0xff1abc9c);
-
-                    tv_end_date.setText("날짜선택");
-                    tv_end_date.setTextColor(0xff1abc9c);
-                }
-            }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-
 }
