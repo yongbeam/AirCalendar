@@ -14,10 +14,17 @@ Airbnb-style calendar
 
 # Usage
 
-1.Include the library as local library project.
+1.Include the library as local library project. ( not jcenter )
 ```gradle
+
+  repositories {
+      maven {
+          url  "http://dl.bintray.com/yongbeam/maven" 
+      }
+  }
+
   dependencies {
-      compile 'com.yongbeom.aircalendar:aircalendar:0.0.1@aar'
+      # compile 'com.yongbeom.aircalendar:aircalendar:0.0.2@aar'
   }
 ```
 
