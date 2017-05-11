@@ -226,7 +226,6 @@ class SimpleMonthView extends View {
     private String getMonthAndYearString() {
         int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_NO_MONTH_DAY;
         mStringBuilder.setLength(0);
-//        return mCalendar.get(Calendar.YEAR)+"."+(mCalendar.get(Calendar.MONTH)+1)+"월";      // 포멧 지정시
 
         long millis = mCalendar.getTimeInMillis();
         return DateUtils.formatDateRange(getContext(), millis, millis, flags);    // 지역화된 포멧으로 출력
@@ -238,7 +237,6 @@ class SimpleMonthView extends View {
 
         boolean isClick = false;
         if(mToday > calendarDay.day){
-            // 지난날짜 선택 막음
             isClick = false;
         }else{
             if(isShowBooking){
@@ -267,20 +265,6 @@ class SimpleMonthView extends View {
                     isClick = true;
                 }
 
-//                if(!isClick && bookingDateArray != null){
-//                    if(!AirCalendarUtils.checkStartDateToEndDate(bookingDateArray , TEMP_BOOKING_DATE)){
-//                        for(int j=0; j< bookingDateArray.size(); j++){
-//                            if(bookingDateArray.get(j).equals(AirCalendarUtils.convertMinusDate(TEMP_BOOKING_DATE))){
-//                                isClick = false;
-//                                break;
-//                            }else{
-//                                isClick = true;
-//                            }
-//                        }
-//                    }
-//                }
-
-                // 특정개월 이후는 막음
                 if((calendarDay.month) > mMonthPlus3){
                     isClick = false;
                 }
