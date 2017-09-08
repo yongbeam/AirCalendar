@@ -85,7 +85,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_marginBottom="14dp"
                             android:layout_marginLeft="15dp"
-                            android:text="날짜선택"
+                            android:text="-"
                             android:textColor="@color/colorTest"
                             android:textSize="16sp" />
 
@@ -97,7 +97,7 @@
                             android:layout_alignLeft="@+id/tv_start_date"
                             android:layout_alignStart="@+id/tv_start_date"
                             android:layout_marginBottom="5dp"
-                            android:text="체크인"
+                            android:text="Start"
                             android:textColor="#9b9b9b"
                             android:textSize="12sp" />
                     </RelativeLayout>
@@ -117,7 +117,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_marginBottom="14dp"
                             android:layout_marginLeft="16dp"
-                            android:text="날짜선택"
+                            android:text="-"
                             android:textColor="@color/colorTest"
                             android:textSize="16sp" />
 
@@ -135,7 +135,7 @@
                             android:layout_alignLeft="@+id/tv_end_date"
                             android:layout_alignStart="@+id/tv_end_date"
                             android:layout_marginBottom="5dp"
-                            android:text="체크아웃"
+                            android:text="End"
                             android:textColor="#9b9b9b"
                             android:textSize="12sp" />
 
