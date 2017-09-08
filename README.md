@@ -16,9 +16,9 @@ Airbnb-style calendar
 
 1.Include the library as local library project.
 ```gradle
-  dependencies {
-      compile 'com.yongbeom.aircalendar:aircalendar:0.0.1@aar'
-  }
+
+ ....
+  
 ```
 
 2.Add AirCalendarDatePickerActivity into your AndroidManifest.xml
