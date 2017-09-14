@@ -128,17 +128,17 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
     private void init(){
 
-        rl_done_btn = (RelativeLayout) findViewById(R.id.rl_done_btn);
-        tv_start_date = (TextView) findViewById(R.id.tv_start_date);
-        tv_end_date = (TextView) findViewById(R.id.tv_end_date);
-        tv_popup_msg = (TextView) findViewById(R.id.tv_popup_msg);
-        rl_checkout_select_info_popup = (RelativeLayout) findViewById(R.id.rl_checkout_select_info_popup);
-        rl_reset_btn = (RelativeLayout) findViewById(R.id.rl_reset_btn);
-        rl_popup_select_checkout_info_ok = (RelativeLayout) findViewById(R.id.rl_popup_select_checkout_info_ok);
-        rl_checkout_select_info_popup = (RelativeLayout) findViewById(R.id.rl_checkout_select_info_popup);
-        rl_iv_back_btn_bg = (RelativeLayout) findViewById(R.id.rl_iv_back_btn_bg);
+        rl_done_btn = findViewById(R.id.rl_done_btn);
+        tv_start_date = findViewById(R.id.tv_start_date);
+        tv_end_date = findViewById(R.id.tv_end_date);
+        tv_popup_msg = findViewById(R.id.tv_popup_msg);
+        rl_checkout_select_info_popup = findViewById(R.id.rl_checkout_select_info_popup);
+        rl_reset_btn = findViewById(R.id.rl_reset_btn);
+        rl_popup_select_checkout_info_ok = findViewById(R.id.rl_popup_select_checkout_info_ok);
+        rl_checkout_select_info_popup = findViewById(R.id.rl_checkout_select_info_popup);
+        rl_iv_back_btn_bg = findViewById(R.id.rl_iv_back_btn_bg);
 
-        pickerView = (DayPickerView) findViewById(R.id.pickerView);
+        pickerView = findViewById(R.id.pickerView);
         pickerView.setIsMonthDayLabel(isMonthLabel);
 
         SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy", Locale.KOREA );
@@ -231,7 +231,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
     @Override
     public void onDayOfMonthSelected(int year, int month, int day) {
-
+        // TODO Single Select Event
     }
 
     @Override
@@ -241,23 +241,32 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             Calendar cl = Calendar.getInstance();
 
             cl.setTimeInMillis(selectedDays.getFirst().getDate().getTime());
-            String start_month_str = (cl.get(Calendar.MONTH)+1)+"";
-            if((cl.get(Calendar.MONTH)+1) < 10){
-                start_month_str = "0"+start_month_str;
-            }
 
-            String start_day_str = cl.get(Calendar.DAY_OF_MONTH)+"";
-            if(cl.get(Calendar.DAY_OF_MONTH) < 10){
-                start_day_str = "0"+start_day_str;
-            }
+            // 월
+            int start_month_int = (cl.get(Calendar.MONTH)+1);
+            String start_month_str =  String.format("%02d" , start_month_int);
+
+            // 일
+            int start_day_int = cl.get(Calendar.DAY_OF_MONTH);
+            String start_day_str =  String.format("%02d" , start_day_int);
+
             String startSetDate = cl.get(Calendar.YEAR)+start_month_str+start_day_str;
             String startDateDay = AirCalendarUtils.getDateDay(startSetDate , "yyyyMMdd");
             String startDate = cl.get(Calendar.YEAR) + "-" + start_month_str + "-" + start_day_str;
 
             cl.setTimeInMillis(selectedDays.getLast().getDate().getTime());
-            String endSetDate = cl.get(Calendar.YEAR)+start_month_str+start_day_str;
+
+            // 월
+            int end_month_int = (cl.get(Calendar.MONTH)+1);
+            String end_month_str = String.format("%02d" , end_month_int);
+
+            // 일
+            int end_day_int = cl.get(Calendar.DAY_OF_MONTH);
+            String end_day_str = String.format("%02d" , end_day_int);
+
+            String endSetDate = cl.get(Calendar.YEAR)+end_month_str+end_day_str;
             String endDateDay = AirCalendarUtils.getDateDay(endSetDate , "yyyyMMdd");
-            String endDate = cl.get(Calendar.YEAR) + "-" + start_month_str + "-" + start_day_str;
+            String endDate = cl.get(Calendar.YEAR) + "-" + end_month_str + "-" + end_day_str;
 
             tv_start_date.setText(startDate + " " + startDateDay);
             tv_start_date.setTextColor(0xff4a4a4a);
