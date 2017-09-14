@@ -17,7 +17,7 @@ Airbnb-style calendar
 1.Include the library as local library project.
 ```gradle
 
- ....
+ compile 'com.yongbeom.aircalendar:AirCalendar:0.0.1'
   
 ```
 
