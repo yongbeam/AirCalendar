@@ -5,7 +5,7 @@
 # AirCalendar
 Airbnb-style calendar
 
-[ ![Download](https://api.bintray.com/packages/yongbeam/maven/AirCalendar/images/download.svg) ](https://bintray.com/yongbeam/maven/AirCalendar/_latestVersion)
+[![](https://jitpack.io/v/yongbeam/AirCalendar.svg)](https://jitpack.io/#yongbeam/AirCalendar)
 
 # Example
 <p align="center">
