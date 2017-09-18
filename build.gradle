@@ -6,7 +6,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+//        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
@@ -17,8 +18,8 @@ allprojects {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.1'
-    group = 'build setup'
-    description = "Adds the Gradle wrapper with the specified Gradle version to the project."
-}
+//task wrapper(type: Wrapper) {
+//    gradleVersion = '4.1'
+//    group = 'build setup'
+//    description = "Adds the Gradle wrapper with the specified Gradle version to the project."
+//}
