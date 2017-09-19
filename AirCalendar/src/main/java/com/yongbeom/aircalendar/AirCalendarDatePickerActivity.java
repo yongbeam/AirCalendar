@@ -232,6 +232,23 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     @Override
     public void onDayOfMonthSelected(int year, int month, int day) {
         // TODO Single Select Event
+        try{
+            String start_month_str =  String.format("%02d" , (month+1));
+            // 일
+            String start_day_str =  String.format("%02d" , day);
+            String startSetDate = year+start_month_str+start_day_str;
+
+            String startDateDay = AirCalendarUtils.getDateDay(startSetDate , "yyyyMMdd");
+
+            tv_start_date.setText(year+"-"+start_month_str+"-"+start_day_str + " " + startDateDay);
+            tv_start_date.setTextColor(0xff4a4a4a);
+
+            tv_end_date.setText("-");
+            tv_end_date.setTextColor(0xff1abc9c);
+            SELECT_END_DATE = "";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
