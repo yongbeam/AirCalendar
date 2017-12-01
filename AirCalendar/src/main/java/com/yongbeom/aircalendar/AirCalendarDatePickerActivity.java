@@ -153,14 +153,13 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
         if(isSelect){
             selectDate = new selectDateModel();
-            pickerView.setSelected(true);
+            selectDate.setSelectd(true);
             selectDate.setFristYear(sYear);
             selectDate.setFristMonth(sMonth);
             selectDate.setFristDay(sDay);
             selectDate.setLastYear(eYear);
             selectDate.setLastMonth(eMonth);
             selectDate.setLastDay(eDay);
-
             pickerView.setSelected(selectDate);
         }
 

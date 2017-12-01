@@ -33,12 +33,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         AirCalendarIntent intent = new AirCalendarIntent(this);
 //        intent.isBooking(false); // DEFAULT false
-//        intent.isSelect(false); // DEFAULT false
+//        intent.isSelect(true); // DEFAULT false
 //        intent.setBookingDateArray();
-//        intent.setStartDate();
-//        intent.setEndDate();
+//        intent.setStartDate(2017, 12, 1);
+//        intent.setEndDate(2017, 12, 1);
 //        intent.isMonthLabels(false);
         startActivityForResult(intent, REQUEST_CODE);
 
