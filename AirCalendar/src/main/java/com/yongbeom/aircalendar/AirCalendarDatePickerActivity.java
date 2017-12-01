@@ -57,6 +57,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     public final static String EXTRA_SELECT_DATE_EM = "SELECT_END_DATE_M";
     public final static String EXTRA_SELECT_DATE_ED = "SELECT_END_DATE_D";
     public final static String EXTRA_IS_MONTH_LABEL = "IS_MONTH_LABEL";
+    public final static String EXTRA_IS_SINGLE_SELECT = "IS_SINGLE_SELECT";
 
     public final static String RESULT_SELECT_START_DATE = "start_date";
     public final static String RESULT_SELECT_END_DATE = "end_date";
@@ -84,6 +85,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     private boolean isSelect = false;
     private boolean isBooking = false;
     private boolean isMonthLabel = false;
+    private boolean isSingleSelect = false;
     private ArrayList<String> dates;
     private selectDateModel selectDate;
 
@@ -104,6 +106,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         isBooking = getData.getBooleanExtra(EXTRA_IS_BOOIKNG , false);
         isSelect = getData.getBooleanExtra(EXTRA_IS_SELECT , false);
         isMonthLabel = getData.getBooleanExtra(EXTRA_IS_MONTH_LABEL , false);
+        isSingleSelect = getData.getBooleanExtra(EXTRA_IS_SINGLE_SELECT , false);
         dates = getData.getStringArrayListExtra(EXTRA_BOOKING_DATES);
 
         sYear = getData.getIntExtra(EXTRA_SELECT_DATE_SY , 0);
@@ -140,6 +143,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
         pickerView = findViewById(R.id.pickerView);
         pickerView.setIsMonthDayLabel(isMonthLabel);
+        pickerView.setIsSingleSelect(isSingleSelect);
 
         SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy", Locale.KOREA );
         Date currentTime = new Date ( );

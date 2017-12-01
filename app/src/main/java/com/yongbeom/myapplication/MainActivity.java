@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         AirCalendarIntent intent = new AirCalendarIntent(this);
+//        intent.isSingleSelect(false);
 //        intent.isBooking(false); // DEFAULT false
 //        intent.isSelect(true); // DEFAULT false
 //        intent.setBookingDateArray();

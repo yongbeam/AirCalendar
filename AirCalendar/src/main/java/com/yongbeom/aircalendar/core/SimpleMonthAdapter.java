@@ -27,6 +27,7 @@ package com.yongbeom.aircalendar.core;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -54,10 +55,11 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     private boolean isShowBooking = false;
     private boolean isSelected = false;
     private boolean isMonthDayLabels = false;
+    private boolean isSingleSelect= false;
     private selectDateModel mSelectDateModel;
     private ArrayList<String> mBookingDates;
 
-    public SimpleMonthAdapter(Context context, DatePickerController datePickerController, TypedArray typedArray ,  boolean showBooking , boolean monthDayLabels , ArrayList<String> bookingDates , selectDateModel selectedDay) {
+    public SimpleMonthAdapter(Context context, DatePickerController datePickerController, TypedArray typedArray ,  boolean showBooking , boolean monthDayLabels , boolean isSingle, ArrayList<String> bookingDates , selectDateModel selectedDay) {
         this.typedArray = typedArray;
         calendar = Calendar.getInstance();
         firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH));
@@ -70,6 +72,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         isShowBooking = showBooking;
         mSelectDateModel = selectedDay;
         mBookingDates = bookingDates;
+        isSingleSelect = isSingle;
 
         isMonthDayLabels = monthDayLabels;
 
@@ -191,109 +194,113 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
     public void setSelectedDay(CalendarDay calendarDay) {
 
-        if (!mIsSingleSelect && selectedDays.getFirst() != null && selectedDays.getLast() == null) {
-            selectedDays.setLast(calendarDay);
-
-            CalendarDay firstDays = selectedDays.getFirst();
-            int selectedFirstDay = firstDays.day;
-            int selectedFirstMonth = firstDays.month;
-            int selectedFirstYear = firstDays.year;
-
-            CalendarDay lastDays = selectedDays.getLast();
-            int selectedLastDay = lastDays.day;
-            int selectedLastMonth = lastDays.month;
-            int selectedLastYear = lastDays.year;
-
-            if ((selectedFirstDay != -1 && selectedLastDay != -1
-                    && selectedFirstYear == selectedLastYear &&
-                    selectedFirstMonth == selectedLastMonth &&
-                    selectedFirstDay > selectedLastDay)) {
-                int tempSelectDay = selectedFirstDay;
-                selectedFirstDay = selectedLastDay;
-                selectedLastDay = tempSelectDay;
-
-                firstDays.day = selectedFirstDay;
-
-                lastDays.day = selectedLastDay;
-
-                selectedDays.setFirst(firstDays);
-                selectedDays.setLast(lastDays);
-
-                if (!mCanSelectBeforeDay) {
-                    selectedDays.setLast(null);
-                    notifyDataSetChanged();
-                    return;
-                }
-            }
-            if ((selectedFirstDay != -1 && selectedLastDay != -1
-                    && selectedFirstYear == selectedLastYear &&
-                    selectedFirstMonth > selectedLastMonth)) {
-                int tempSelectMonth = selectedFirstMonth;
-                selectedFirstMonth = selectedLastMonth;
-                selectedLastMonth = tempSelectMonth;
-                int tempSelectDay = selectedFirstDay;
-                selectedFirstDay = selectedLastDay;
-                selectedLastDay = tempSelectDay;
-
-
-                firstDays.day = selectedFirstDay;
-                firstDays.month = selectedFirstMonth;
-
-                lastDays.day = selectedLastDay;
-                lastDays.month = selectedLastMonth;
-
-                selectedDays.setFirst(firstDays);
-                selectedDays.setLast(lastDays);
-
-                if (!mCanSelectBeforeDay) {
-                    selectedDays.setLast(null);
-                    notifyDataSetChanged();
-                    return;
-                }
-            }
-
-            if ((selectedFirstDay != -1 && selectedLastDay != -1
-                    && selectedFirstYear > selectedLastYear)) {
-                int tempSelectYear = selectedFirstYear;
-                selectedFirstYear = selectedLastYear;
-                selectedLastYear = tempSelectYear;
-                int tempSelectMonth = selectedFirstMonth;
-                selectedFirstMonth = selectedLastMonth;
-                selectedLastMonth = tempSelectMonth;
-                int tempSelectDay = selectedFirstDay;
-                selectedFirstDay = selectedLastDay;
-                selectedLastDay = tempSelectDay;
-
-
-                firstDays.day = selectedFirstDay;
-                firstDays.month = selectedFirstMonth;
-                firstDays.year = selectedFirstYear;
-
-                lastDays.day = selectedLastDay;
-                lastDays.month = selectedLastMonth;
-                lastDays.year = selectedLastYear;
-
-                selectedDays.setFirst(firstDays);
-                selectedDays.setLast(lastDays);
-
-                if (!mCanSelectBeforeDay) {
-                    selectedDays.setLast(null);
-                    notifyDataSetChanged();
-                    return;
-                }
-            }
-
-            if (selectedDays.getFirst().month < calendarDay.month) {
-                for (int i = 0; i < selectedDays.getFirst().month - calendarDay.month - 1; ++i)
-                    mController.onDayOfMonthSelected(selectedDays.getFirst().year, selectedDays.getFirst().month + i, selectedDays.getFirst().day);
-            }
-
-            mController.onDateRangeSelected(selectedDays);
-        } else if (selectedDays.getLast() != null) {
+        if(isSingleSelect){
             selectedDays.setFirst(calendarDay);
             selectedDays.setLast(null);
-        } else
-            selectedDays.setFirst(calendarDay);
+        }else{
+            if (!mIsSingleSelect && selectedDays.getFirst() != null && selectedDays.getLast() == null) {
+                selectedDays.setLast(calendarDay);
+
+                CalendarDay firstDays = selectedDays.getFirst();
+                int selectedFirstDay = firstDays.day;
+                int selectedFirstMonth = firstDays.month;
+                int selectedFirstYear = firstDays.year;
+
+                CalendarDay lastDays = selectedDays.getLast();
+                int selectedLastDay = lastDays.day;
+                int selectedLastMonth = lastDays.month;
+                int selectedLastYear = lastDays.year;
+
+                if ((selectedFirstDay != -1 && selectedLastDay != -1
+                        && selectedFirstYear == selectedLastYear &&
+                        selectedFirstMonth == selectedLastMonth &&
+                        selectedFirstDay > selectedLastDay)) {
+                    int tempSelectDay = selectedFirstDay;
+                    selectedFirstDay = selectedLastDay;
+                    selectedLastDay = tempSelectDay;
+
+                    firstDays.day = selectedFirstDay;
+
+                    lastDays.day = selectedLastDay;
+
+                    selectedDays.setFirst(firstDays);
+                    selectedDays.setLast(lastDays);
+
+                    if (!mCanSelectBeforeDay) {
+                        selectedDays.setLast(null);
+                        notifyDataSetChanged();
+                        return;
+                    }
+                }
+                if ((selectedFirstDay != -1 && selectedLastDay != -1
+                        && selectedFirstYear == selectedLastYear &&
+                        selectedFirstMonth > selectedLastMonth)) {
+                    int tempSelectMonth = selectedFirstMonth;
+                    selectedFirstMonth = selectedLastMonth;
+                    selectedLastMonth = tempSelectMonth;
+                    int tempSelectDay = selectedFirstDay;
+                    selectedFirstDay = selectedLastDay;
+                    selectedLastDay = tempSelectDay;
+
+                    firstDays.day = selectedFirstDay;
+                    firstDays.month = selectedFirstMonth;
+
+                    lastDays.day = selectedLastDay;
+                    lastDays.month = selectedLastMonth;
+
+                    selectedDays.setFirst(firstDays);
+                    selectedDays.setLast(lastDays);
+
+                    if (!mCanSelectBeforeDay) {
+                        selectedDays.setLast(null);
+                        notifyDataSetChanged();
+                        return;
+                    }
+                }
+
+                if ((selectedFirstDay != -1 && selectedLastDay != -1
+                        && selectedFirstYear > selectedLastYear)) {
+                    int tempSelectYear = selectedFirstYear;
+                    selectedFirstYear = selectedLastYear;
+                    selectedLastYear = tempSelectYear;
+                    int tempSelectMonth = selectedFirstMonth;
+                    selectedFirstMonth = selectedLastMonth;
+                    selectedLastMonth = tempSelectMonth;
+                    int tempSelectDay = selectedFirstDay;
+                    selectedFirstDay = selectedLastDay;
+                    selectedLastDay = tempSelectDay;
+
+                    firstDays.day = selectedFirstDay;
+                    firstDays.month = selectedFirstMonth;
+                    firstDays.year = selectedFirstYear;
+
+                    lastDays.day = selectedLastDay;
+                    lastDays.month = selectedLastMonth;
+                    lastDays.year = selectedLastYear;
+
+                    selectedDays.setFirst(firstDays);
+                    selectedDays.setLast(lastDays);
+
+                    if (!mCanSelectBeforeDay) {
+                        selectedDays.setLast(null);
+                        notifyDataSetChanged();
+                        return;
+                    }
+                }
+
+                if (selectedDays.getFirst().month < calendarDay.month) {
+                    for (int i = 0; i < selectedDays.getFirst().month - calendarDay.month - 1; ++i)
+                        mController.onDayOfMonthSelected(selectedDays.getFirst().year, selectedDays.getFirst().month + i, selectedDays.getFirst().day);
+                }
+
+                mController.onDateRangeSelected(selectedDays);
+            } else if (selectedDays.getLast() != null) {
+                selectedDays.setFirst(calendarDay);
+                selectedDays.setLast(null);
+            } else{
+                selectedDays.setFirst(calendarDay);
+            }
+        }
 
         notifyDataSetChanged();
     }

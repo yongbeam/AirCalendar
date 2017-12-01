@@ -70,6 +70,10 @@ public class AirCalendarIntent  extends Intent implements Parcelable {
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_MONTH_LABEL, isLabel);
     }
 
+    public void isSingleSelect(boolean isSingle) {
+        this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_SINGLE_SELECT, isSingle);
+    }
+
     public void setBookingDateArray(ArrayList<String> arrays) {
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_BOOKING_DATES, arrays);
     }

@@ -45,6 +45,7 @@ public class DayPickerView extends RecyclerView {
     private OnScrollListener onScrollListener;
     protected boolean isBooking = false;
     protected boolean isMonthDayLabels = false;
+    protected boolean isSingleSelect = false;
     protected ArrayList<String> mBookingDates;
     private selectDateModel mSelectDateModel = null;
 
@@ -88,6 +89,8 @@ public class DayPickerView extends RecyclerView {
 
     public void setIsMonthDayLabel(boolean isLabel) { this.isMonthDayLabels = isLabel; }
 
+    public void setIsSingleSelect(boolean isSingle) { this.isSingleSelect = isSingle; }
+
     public void setMonthDayLabels(boolean monthDayLabels){ this.isMonthDayLabels = monthDayLabels; }
 
 	public void init(Context paramContext) {
@@ -115,7 +118,7 @@ public class DayPickerView extends RecyclerView {
 
 	protected void setUpAdapter() {
 		if (mAdapter == null) {
-			mAdapter = new SimpleMonthAdapter(getContext(), mController, typedArray , isBooking , isMonthDayLabels , mBookingDates , mSelectDateModel);
+			mAdapter = new SimpleMonthAdapter(getContext(), mController, typedArray , isBooking , isMonthDayLabels , isSingleSelect , mBookingDates , mSelectDateModel);
         }
 		mAdapter.notifyDataSetChanged();
 	}
