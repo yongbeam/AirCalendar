@@ -29,7 +29,7 @@ Airbnb-style calendar
 ```
 
 ```gradle
-  compile 'com.github.yongbeam:AirCalendar:0.0.5'
+  compile 'com.github.yongbeam:AirCalendar:x.x.x'
 ```
 
 2.Add AirCalendarDatePickerActivity into your AndroidManifest.xml
