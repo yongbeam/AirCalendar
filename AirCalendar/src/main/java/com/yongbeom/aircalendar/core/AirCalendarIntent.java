@@ -58,26 +58,57 @@ public class AirCalendarIntent  extends Intent implements Parcelable {
         super(packageContext, AirCalendarDatePickerActivity.class);
     }
 
-    public void isSelect(boolean isSelect) {
-        this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_SELECT, isSelect);
-    }
-
-    public void isBooking(boolean isBooking) {
-        this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_BOOIKNG, isBooking);
-    }
-
+    /**
+     * Sets whether the month label is displayed.
+     * @param isLabel default false
+     */
     public void isMonthLabels(boolean isLabel) {
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_MONTH_LABEL, isLabel);
     }
 
+    /**
+     * Select a day only.
+     * (Range Deactivation)
+     * @param isSingle default false
+     */
     public void isSingleSelect(boolean isSingle) {
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_SINGLE_SELECT, isSingle);
     }
 
+    /**
+     * Disables the specified date to be selected in the calendar.
+     * ( The date is required by setBookingDateArray ().
+     * @param isBooking default false
+     */
+    public void isBooking(boolean isBooking) {
+        this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_BOOIKNG, isBooking);
+    }
+
+    /**
+     * Disables the specified date to be selected in the calendar.
+     * (isBooking option should be true)
+     * e.g 2018-11-01 , ArrayList < String > format
+     * @param arrays format yyyy-MM-dd
+     */
     public void setBookingDateArray(ArrayList<String> arrays) {
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_BOOKING_DATES, arrays);
     }
 
+    /**
+     * Lets the specified date be preselected in the calendar.
+     * @param isSelect default false
+     */
+    public void isSelect(boolean isSelect) {
+        this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_SELECT, isSelect);
+    }
+
+    /**
+     * Lets the specified date be preselected in the calendar. ( Start date )
+     * (isSelect option should be true)
+     * @param year
+     * @param month
+     * @param day
+     */
     public void setStartDate(int year , int month , int day){
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_SELECT_DATE_SY, year);
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_SELECT_DATE_SM, month);
@@ -85,9 +116,32 @@ public class AirCalendarIntent  extends Intent implements Parcelable {
 
     }
 
+    /**
+     * Lets the specified date be preselected in the calendar. ( End date )
+     * * (isSelect option should be true)
+     * @param year
+     * @param month
+     * @param day
+     */
     public void setEndDate(int year , int month , int day){
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_SELECT_DATE_EY, year);
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_SELECT_DATE_EM, month);
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_SELECT_DATE_ED, day);
+    }
+
+    /**
+     * When setting for 3 months, the date after 3 months is disabled.
+     * @param activeMonth e.g 3
+     */
+    public void setActiveMonth(int activeMonth){
+        this.putExtra(AirCalendarDatePickerActivity.EXTRA_ACTIVE_MONTH_NUM , activeMonth);
+    }
+
+    /**
+     * If the current date is November 1, 2018, the calendar will be activated until November 1, 2019.
+     * @param maxYear e.g 2020
+     */
+    public void setMaxYear(int maxYear){
+        this.putExtra(AirCalendarDatePickerActivity.EXTRA_MAX_YEAR , maxYear);
     }
 }

@@ -42,14 +42,20 @@ import android.view.View;
 import com.yongbeom.aircalendar.R;
 import com.yongbeom.aircalendar.core.util.AirCalendarUtils;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
 import java.security.InvalidParameterException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-class SimpleMonthView extends View {
-    private String TAG = "SimpleMonthView";
+class AirMonthView extends View {
+    private String TAG = "AirMonthView";
 
     public static final String VIEW_PARAMS_HEIGHT = "height";
     public static final String VIEW_PARAMS_MONTH = "month";
@@ -117,6 +123,7 @@ class SimpleMonthView extends View {
     protected int mRowHeight = DEFAULT_HEIGHT;
     protected int mWidth;
     protected int mYear;
+    protected int mMaxActiveMonth = -1;
     final Time today;
 
     private final Calendar mCalendar;
@@ -130,13 +137,14 @@ class SimpleMonthView extends View {
     private Context mContext;
     private ArrayList<String> bookingDateArray;
 
-    public SimpleMonthView(Context context, TypedArray typedArray , boolean showBooking , boolean monthDayLabels , ArrayList<String> bookingdates) {
+    public AirMonthView(Context context, TypedArray typedArray , boolean showBooking , boolean monthDayLabels , ArrayList<String> bookingdates , int maxActiveMonth) {
         super(context);
 
         isMonthDayLabels = monthDayLabels;
         isShowBooking = showBooking;
         mContext = context;
         bookingDateArray = bookingdates;
+        mMaxActiveMonth = maxActiveMonth;
 
         Resources resources = context.getResources();
         mDayLabelCalendar = Calendar.getInstance();
@@ -233,14 +241,13 @@ class SimpleMonthView extends View {
 
     private String tempStartDate = null;
     private String tempEndDate = null;
-    private void onDayClick(SimpleMonthAdapter.CalendarDay calendarDay) {
+    private void onDayClick(AirMonthAdapter.CalendarDay calendarDay) {
 
         boolean isClick = false;
         if(mToday > calendarDay.day){
             isClick = false;
         }else{
             if(isShowBooking){
-                String TEMP_BOOKING_DATE = "";
                 if(bookingDateArray != null && bookingDateArray.size() != 0){
                     for(int i=0; i< bookingDateArray.size(); i++){
                         String month_str = (mMonth + 1)+"";
@@ -255,7 +262,6 @@ class SimpleMonthView extends View {
                         String BOOKING_DATE = mYear+"-"+month_str+"-"+day_str;
                         if(bookingDateArray.get(i).equals(BOOKING_DATE)){
                             isClick = false;
-                            TEMP_BOOKING_DATE = BOOKING_DATE;
                             break;
                         }else{
                             isClick = true;
@@ -270,6 +276,41 @@ class SimpleMonthView extends View {
                 }
             }else{
                 isClick = true;
+            }
+        }
+
+        if(mMaxActiveMonth != -1 && mMaxActiveMonth > 0){
+            DateTime getViewDate = new DateTime();
+            DateTime getTouchDate = new DateTime();
+            DateTime lastMonth = new DateTime();
+            try{
+                DateFormat readDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                Date date = readDate.parse(calendarDay.year +"-"+(calendarDay.month+1)+"-01 00:00:00");
+                Date touchDate = readDate.parse(calendarDay.year +"-"+(calendarDay.month+1)+"-"+calendarDay.day+" 00:00:00");
+                getViewDate = new DateTime(date);
+                getTouchDate = new DateTime(touchDate);
+
+                LocalDate maxiumDayInMonth = new DateTime().plusMonths(mMaxActiveMonth).toLocalDate().dayOfMonth().withMaximumValue();
+                Date date2 = readDate.parse(maxiumDayInMonth.toString("yyyy-MM-dd")+" 00:00:00");
+                lastMonth = new DateTime(date2);
+                lastMonth = lastMonth.plusDays(1);
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+            // 오늘 날짜에 3개월 더한 날짜
+            DateTime setThreeMonth = new DateTime();
+            setThreeMonth = setThreeMonth.plusMonths(mMaxActiveMonth);
+
+            int compare = setThreeMonth.compareTo(getViewDate);
+            if(compare == 0 || compare == -1){
+                isClick = false;
+                if(getTouchDate.toString("yyyy-MM-dd").equals(lastMonth.dayOfMonth().withMinimumValue().toString("yyyy-MM-dd"))){
+                    isClick = true;
+                }
             }
         }
 
@@ -336,6 +377,28 @@ class SimpleMonthView extends View {
                     mMonthNumPaint.setColor(getResources().getColor(R.color.color_old_day_text_color));
                 } else {
                     mMonthNumPaint.setColor(mWeekEndColor);
+                }
+            }
+
+
+            if(mMaxActiveMonth != -1 && mMaxActiveMonth > 0){
+                DateTime getViewDate = new DateTime();
+                try{
+                    DateFormat readDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    Date date = readDate.parse(mYear +"-"+mMonth+"-01 00:00:00");
+                    getViewDate = new DateTime(date);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                // 오늘 날짜에 3개월 더한 날짜
+                DateTime setThreeMonth = new DateTime();
+                setThreeMonth = setThreeMonth.plusMonths(mMaxActiveMonth);
+
+                int compare = setThreeMonth.minusMonths(1).compareTo(getViewDate);
+                if(compare == 0 || compare == -1){
+                    mMonthNumPaint.setColor(getResources().getColor(R.color.color_old_day_text_color));
+                    mMonthNumPaint.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
                 }
             }
 
@@ -461,7 +524,7 @@ class SimpleMonthView extends View {
 
     }
 
-    public SimpleMonthAdapter.CalendarDay getDayFromLocation(float x, float y) {
+    public AirMonthAdapter.CalendarDay getDayFromLocation(float x, float y) {
 
         int padding = mPadding;
         if ((x < padding) || (x > mWidth - mPadding)) {
@@ -474,7 +537,7 @@ class SimpleMonthView extends View {
         if (mMonth > 11 || mMonth < 0 || CalendarUtils.getDaysInMonth(mMonth, mYear) < day || day < 1)
             return null;
 
-        return new SimpleMonthAdapter.CalendarDay(mYear, mMonth, day);
+        return new AirMonthAdapter.CalendarDay(mYear, mMonth, day);
     }
 
     protected void initView() {
@@ -548,7 +611,7 @@ class SimpleMonthView extends View {
 
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            SimpleMonthAdapter.CalendarDay calendarDay = getDayFromLocation(event.getX(), event.getY());
+            AirMonthAdapter.CalendarDay calendarDay = getDayFromLocation(event.getX(), event.getY());
             if (calendarDay != null) {
                 onDayClick(calendarDay);
             }
@@ -606,7 +669,11 @@ class SimpleMonthView extends View {
         if (params.containsKey(VIEW_PARAMS_WEEK_START)) {
             mWeekStart = params.get(VIEW_PARAMS_WEEK_START);
         } else {
-            mWeekStart = mCalendar.getFirstDayOfWeek();
+            int weekStart = params.get(VIEW_PARAMS_WEEK_START);
+            try{
+                weekStart = mCalendar.getFirstDayOfWeek();
+            }catch (RuntimeException e){}
+            mWeekStart = weekStart;
         }
 
         mNumCells = CalendarUtils.getDaysInMonth(mMonth, mYear);
@@ -628,7 +695,7 @@ class SimpleMonthView extends View {
     }
 
     public static abstract interface OnDayClickListener {
-        public abstract void onDayClick(SimpleMonthView simpleMonthView, SimpleMonthAdapter.CalendarDay calendarDay);
+        public abstract void onDayClick(AirMonthView airMonthView, AirMonthAdapter.CalendarDay calendarDay);
     }
 
 

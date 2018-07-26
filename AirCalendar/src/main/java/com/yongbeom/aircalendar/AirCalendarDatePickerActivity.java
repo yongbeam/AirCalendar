@@ -33,9 +33,11 @@ import android.widget.TextView;
 
 import com.yongbeom.aircalendar.core.DatePickerController;
 import com.yongbeom.aircalendar.core.DayPickerView;
-import com.yongbeom.aircalendar.core.SimpleMonthAdapter;
-import com.yongbeom.aircalendar.core.selectDateModel;
+import com.yongbeom.aircalendar.core.AirMonthAdapter;
+import com.yongbeom.aircalendar.core.SelectModel;
 import com.yongbeom.aircalendar.core.util.AirCalendarUtils;
+
+import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,6 +60,8 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     public final static String EXTRA_SELECT_DATE_ED = "SELECT_END_DATE_D";
     public final static String EXTRA_IS_MONTH_LABEL = "IS_MONTH_LABEL";
     public final static String EXTRA_IS_SINGLE_SELECT = "IS_SINGLE_SELECT";
+    public final static String EXTRA_ACTIVE_MONTH_NUM = "ACTIVE_MONTH_NUMBER";
+    public final static String EXTRA_MAX_YEAR = "MAX_YEAR";
 
     public final static String RESULT_SELECT_START_DATE = "start_date";
     public final static String RESULT_SELECT_END_DATE = "end_date";
@@ -79,7 +83,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
     private String SELECT_START_DATE = "";
     private String SELECT_END_DATE = "";
-    private int YEAR = 2017;
+    private int BASE_YEAR = 2018;
 
     private String FLAG = "all";
     private boolean isSelect = false;
@@ -87,7 +91,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     private boolean isMonthLabel = false;
     private boolean isSingleSelect = false;
     private ArrayList<String> dates;
-    private selectDateModel selectDate;
+    private SelectModel selectDate;
 
     private int sYear = 0;
     private int sMonth = 0;
@@ -95,6 +99,9 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     private int eYear = 0;
     private int eMonth = 0;
     private int eDay = 0;
+
+    private int maxActivieMonth = -1;
+    private int maxYear = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +115,8 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         isMonthLabel = getData.getBooleanExtra(EXTRA_IS_MONTH_LABEL , false);
         isSingleSelect = getData.getBooleanExtra(EXTRA_IS_SINGLE_SELECT , false);
         dates = getData.getStringArrayListExtra(EXTRA_BOOKING_DATES);
+        maxActivieMonth = getData.getIntExtra(EXTRA_ACTIVE_MONTH_NUM , -1);
+        maxYear = getData.getIntExtra(EXTRA_MAX_YEAR , -1);
 
         sYear = getData.getIntExtra(EXTRA_SELECT_DATE_SY , 0);
         sMonth = getData.getIntExtra(EXTRA_SELECT_DATE_SM , 0);
@@ -117,10 +126,9 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         eMonth = getData.getIntExtra(EXTRA_SELECT_DATE_EM , 0);
         eDay = getData.getIntExtra(EXTRA_SELECT_DATE_ED , 0);
 
-
         if(sYear == 0 || sMonth == 0 || sDay == 0
                 || eYear == 0 || eMonth == 0 || eDay == 0){
-            selectDate = new selectDateModel();
+            selectDate = new SelectModel();
             isSelect = false;
         }
 
@@ -144,11 +152,18 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         pickerView = findViewById(R.id.pickerView);
         pickerView.setIsMonthDayLabel(isMonthLabel);
         pickerView.setIsSingleSelect(isSingleSelect);
+        pickerView.setMaxActiveMonth(maxActivieMonth);
 
         SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy", Locale.KOREA );
         Date currentTime = new Date ( );
         String dTime = formatter.format ( currentTime );
-        YEAR = Integer.valueOf(dTime) + 1;
+
+        if(maxYear != -1 && maxYear > Integer.parseInt(new DateTime().toString("yyyy"))){
+            BASE_YEAR = maxYear;
+        }else{
+            // default : now year + 2 year
+            BASE_YEAR = Integer.valueOf(dTime) + 2;
+        }
 
         if(dates != null && dates.size() != 0 && isBooking){
             pickerView.setShowBooking(true);
@@ -156,7 +171,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         }
 
         if(isSelect){
-            selectDate = new selectDateModel();
+            selectDate = new SelectModel();
             selectDate.setSelectd(true);
             selectDate.setFristYear(sYear);
             selectDate.setFristMonth(sMonth);
@@ -229,7 +244,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
     @Override
     public int getMaxYear() {
-        return YEAR;
+        return BASE_YEAR;
     }
 
     @Override
@@ -255,7 +270,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void onDateRangeSelected(SimpleMonthAdapter.SelectedDays<SimpleMonthAdapter.CalendarDay> selectedDays) {
+    public void onDateRangeSelected(AirMonthAdapter.SelectedDays<AirMonthAdapter.CalendarDay> selectedDays) {
 
         try{
             Calendar cl = Calendar.getInstance();

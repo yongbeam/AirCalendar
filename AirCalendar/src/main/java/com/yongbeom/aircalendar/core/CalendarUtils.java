@@ -27,8 +27,7 @@ package com.yongbeom.aircalendar.core;
 import java.util.Calendar;
 
 
-public class CalendarUtils
-{
+public class CalendarUtils {
 	public static int getDaysInMonth(int month, int year) {
         switch (month) {
             case Calendar.JANUARY:

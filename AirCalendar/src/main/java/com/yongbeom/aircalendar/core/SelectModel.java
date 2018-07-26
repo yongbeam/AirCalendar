@@ -24,14 +24,14 @@
  ***********************************************************************************/
 package com.yongbeom.aircalendar.core;
 
-public class selectDateModel {
-    int fristYear;
-    int fristMonth;
-    int fristDay;
-    int lastYear;
-    int lastMonth;
-    int lastDay;
-    boolean isSelectd;
+public class SelectModel {
+    private int fristYear;
+    private int fristMonth;
+    private int fristDay;
+    private int lastYear;
+    private int lastMonth;
+    private int lastDay;
+    private boolean isSelectd;
 
     public int getFristYear() {
         return fristYear;

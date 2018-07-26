@@ -26,8 +26,8 @@ package com.yongbeom.aircalendar.core;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -41,8 +41,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.ViewHolder> implements SimpleMonthView.OnDayClickListener {
-    protected static final int MONTHS_IN_YEAR = 12;
+public class AirMonthAdapter extends RecyclerView.Adapter<AirMonthAdapter.ViewHolder> implements AirMonthView.OnDayClickListener {
+    private static final int MONTHS_IN_YEAR = 12;
     private final TypedArray typedArray;
     private final Context mContext;
     private final DatePickerController mController;
@@ -56,10 +56,19 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     private boolean isSelected = false;
     private boolean isMonthDayLabels = false;
     private boolean isSingleSelect= false;
-    private selectDateModel mSelectDateModel;
+    private int mMaxActiveMonth = -1;
+    private SelectModel mSelectModel;
     private ArrayList<String> mBookingDates;
 
-    public SimpleMonthAdapter(Context context, DatePickerController datePickerController, TypedArray typedArray ,  boolean showBooking , boolean monthDayLabels , boolean isSingle, ArrayList<String> bookingDates , selectDateModel selectedDay) {
+    public AirMonthAdapter(Context context,
+                           DatePickerController datePickerController,
+                           TypedArray typedArray ,
+                           boolean showBooking ,
+                           boolean monthDayLabels ,
+                           boolean isSingle, ArrayList<String> bookingDates ,
+                           SelectModel selectedDay,
+                           int maxActiveMonth) {
+
         this.typedArray = typedArray;
         calendar = Calendar.getInstance();
         firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH));
@@ -70,30 +79,30 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         mContext = context;
         mController = datePickerController;
         isShowBooking = showBooking;
-        mSelectDateModel = selectedDay;
+        mSelectModel = selectedDay;
         mBookingDates = bookingDates;
         isSingleSelect = isSingle;
+        mMaxActiveMonth = maxActiveMonth;
 
         isMonthDayLabels = monthDayLabels;
 
-        if(mSelectDateModel == null){
-            isSelected = false;
-        }else{
-            isSelected = mSelectDateModel.isSelectd();
+        if(mSelectModel != null){
+            isSelected = mSelectModel.isSelectd();
         }
 
         init();
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        final SimpleMonthView simpleMonthView = new SimpleMonthView(mContext, typedArray , isShowBooking , isMonthDayLabels , mBookingDates);
-        return new ViewHolder(simpleMonthView, this);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        final AirMonthView airMonthView = new AirMonthView(mContext, typedArray , isShowBooking , isMonthDayLabels , mBookingDates , mMaxActiveMonth);
+        return new ViewHolder(airMonthView, this);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        final SimpleMonthView v = viewHolder.simpleMonthView;
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        final AirMonthView v = viewHolder.airMonthView;
         final HashMap<String, Integer> drawingParams = new HashMap<String, Integer>();
         int month;
         int year;
@@ -125,24 +134,24 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         v.reuse();
 
         if(isSelected){
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_BEGIN_YEAR, mSelectDateModel.getFristYear());
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_LAST_YEAR, mSelectDateModel.getLastYear());
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_BEGIN_MONTH, (mSelectDateModel.getFristMonth()-1));
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_LAST_MONTH, (mSelectDateModel.getLastMonth()-1));
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_BEGIN_DAY, mSelectDateModel.getFristDay());
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_LAST_DAY, mSelectDateModel.getLastDay());
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_BEGIN_YEAR, mSelectModel.getFristYear());
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_LAST_YEAR, mSelectModel.getLastYear());
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_BEGIN_MONTH, (mSelectModel.getFristMonth()-1));
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_LAST_MONTH, (mSelectModel.getLastMonth()-1));
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_BEGIN_DAY, mSelectModel.getFristDay());
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_LAST_DAY, mSelectModel.getLastDay());
         }else{
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_BEGIN_YEAR, selectedFirstYear);
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_LAST_YEAR, selectedLastYear);
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_BEGIN_MONTH, selectedFirstMonth);
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_LAST_MONTH, selectedLastMonth);
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_BEGIN_DAY, selectedFirstDay);
-            drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_LAST_DAY, selectedLastDay);
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_BEGIN_YEAR, selectedFirstYear);
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_LAST_YEAR, selectedLastYear);
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_BEGIN_MONTH, selectedFirstMonth);
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_LAST_MONTH, selectedLastMonth);
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_BEGIN_DAY, selectedFirstDay);
+            drawingParams.put(AirMonthView.VIEW_PARAMS_SELECTED_LAST_DAY, selectedLastDay);
         }
 
-        drawingParams.put(SimpleMonthView.VIEW_PARAMS_YEAR, year);
-        drawingParams.put(SimpleMonthView.VIEW_PARAMS_MONTH, month);
-        drawingParams.put(SimpleMonthView.VIEW_PARAMS_WEEK_START, calendar.getFirstDayOfWeek());
+        drawingParams.put(AirMonthView.VIEW_PARAMS_YEAR, year);
+        drawingParams.put(AirMonthView.VIEW_PARAMS_MONTH, month);
+        drawingParams.put(AirMonthView.VIEW_PARAMS_WEEK_START, calendar.getFirstDayOfWeek());
         v.setMonthParams(drawingParams);
         v.invalidate();
     }
@@ -153,46 +162,38 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
     @Override
     public int getItemCount() {
-        int itemCount = (((mController.getMaxYear() - calendar.get(Calendar.YEAR)) + 1) * MONTHS_IN_YEAR);
-
-//        if (firstMonth != -1)
-//            itemCount -= firstMonth;
-//
-//        if (lastMonth != -1)
-//            itemCount -= (MONTHS_IN_YEAR - lastMonth) - 1;
-
-        return itemCount;
+        return (((mController.getMaxYear() - calendar.get(Calendar.YEAR))) * MONTHS_IN_YEAR);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        final SimpleMonthView simpleMonthView;
+        final AirMonthView airMonthView;
 
-        public ViewHolder(View itemView, SimpleMonthView.OnDayClickListener onDayClickListener) {
+        private ViewHolder(View itemView, AirMonthView.OnDayClickListener onDayClickListener) {
             super(itemView);
-            simpleMonthView = (SimpleMonthView) itemView;
-            simpleMonthView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            simpleMonthView.setClickable(true);
-            simpleMonthView.setOnDayClickListener(onDayClickListener);
+            airMonthView = (AirMonthView) itemView;
+            airMonthView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            airMonthView.setClickable(true);
+            airMonthView.setOnDayClickListener(onDayClickListener);
         }
     }
 
-    protected void init() {
+    private void init() {
         if (typedArray.getBoolean(R.styleable.DayPickerView_currentDaySelected, false))
             onDayTapped(new CalendarDay(System.currentTimeMillis()));
     }
 
-    public void onDayClick(SimpleMonthView simpleMonthView, CalendarDay calendarDay) {
+    public void onDayClick(AirMonthView airMonthView, CalendarDay calendarDay) {
         if (calendarDay != null) {
             onDayTapped(calendarDay);
         }
     }
 
-    protected void onDayTapped(CalendarDay calendarDay) {
+    private void onDayTapped(CalendarDay calendarDay) {
         mController.onDayOfMonthSelected(calendarDay.year, calendarDay.month, calendarDay.day);
         setSelectedDay(calendarDay);
     }
 
-    public void setSelectedDay(CalendarDay calendarDay) {
+    private void setSelectedDay(CalendarDay calendarDay) {
 
         if(isSingleSelect){
             selectedDays.setFirst(calendarDay);
@@ -363,7 +364,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
         @Override
         public String toString() {
-            final StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("{ year: ");
             stringBuilder.append(year);
             stringBuilder.append(", month: ");

@@ -35,19 +35,23 @@ import com.yongbeom.aircalendar.R;
 import java.util.ArrayList;
 
 public class DayPickerView extends RecyclerView {
+    private DatePickerController mController;
+
     protected Context mContext;
-	protected SimpleMonthAdapter mAdapter;
-	private DatePickerController mController;
+	protected AirMonthAdapter mAdapter;
     protected int mCurrentScrollState = 0;
 	protected long mPreviousScrollPosition;
 	protected int mPreviousScrollState = 0;
-    private TypedArray typedArray;
-    private OnScrollListener onScrollListener;
+    protected int mMaxActiveMonth = -1;
     protected boolean isBooking = false;
     protected boolean isMonthDayLabels = false;
     protected boolean isSingleSelect = false;
     protected ArrayList<String> mBookingDates;
-    private selectDateModel mSelectDateModel = null;
+
+    private TypedArray typedArray;
+    private OnScrollListener onScrollListener;
+    private SelectModel mSelectModel = null;
+
 
     public DayPickerView(Context context)
     {
@@ -83,28 +87,41 @@ public class DayPickerView extends RecyclerView {
 
     public void setBookingDateArray(ArrayList<String> dates){this.mBookingDates = dates;}
 
-    public void setSelected(selectDateModel date){
-        this.mSelectDateModel = date;
+    public void setSelected(SelectModel date){
+        this.mSelectModel = date;
     }
 
     public void setIsMonthDayLabel(boolean isLabel) { this.isMonthDayLabels = isLabel; }
 
     public void setIsSingleSelect(boolean isSingle) { this.isSingleSelect = isSingle; }
 
+    public void setMaxActiveMonth(int maxActiveMonth){ this.mMaxActiveMonth = maxActiveMonth; }
+
     public void setMonthDayLabels(boolean monthDayLabels){ this.isMonthDayLabels = monthDayLabels; }
 
 	public void init(Context paramContext) {
         setLayoutManager(new LinearLayoutManager(paramContext));
 		mContext = paramContext;
-		setUpListView();
+        setUpListView();
+	}
 
-        onScrollListener = new OnScrollListener()
-        {
+	protected void setUpAdapter() {
+		if (mAdapter == null) {
+			mAdapter = new AirMonthAdapter(getContext(), mController, typedArray , isBooking , isMonthDayLabels , isSingleSelect , mBookingDates , mSelectModel , mMaxActiveMonth);
+        }
+		mAdapter.notifyDataSetChanged();
+	}
+
+
+	protected void setUpListView() {
+		setVerticalScrollBarEnabled(false);
+
+        onScrollListener = new OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy)
             {
                 super.onScrolled(recyclerView, dx, dy);
-                final SimpleMonthView child = (SimpleMonthView) recyclerView.getChildAt(0);
+                final AirMonthView child = (AirMonthView) recyclerView.getChildAt(0);
                 if (child == null) {
                     return;
                 }
@@ -113,24 +130,12 @@ public class DayPickerView extends RecyclerView {
                 mPreviousScrollState = mCurrentScrollState;
             }
         };
-	}
 
-
-	protected void setUpAdapter() {
-		if (mAdapter == null) {
-			mAdapter = new SimpleMonthAdapter(getContext(), mController, typedArray , isBooking , isMonthDayLabels , isSingleSelect , mBookingDates , mSelectDateModel);
-        }
-		mAdapter.notifyDataSetChanged();
-	}
-
-
-	protected void setUpListView() {
-		setVerticalScrollBarEnabled(false);
-		setOnScrollListener(onScrollListener);
+		addOnScrollListener(onScrollListener);
 		setFadingEdgeLength(0);
 	}
 
-    public SimpleMonthAdapter.SelectedDays<SimpleMonthAdapter.CalendarDay> getSelectedDays() { return mAdapter.getSelectedDays();}
+    public AirMonthAdapter.SelectedDays<AirMonthAdapter.CalendarDay> getSelectedDays() { return mAdapter.getSelectedDays();}
 
     public ArrayList<String> getBookingDates(){ return this.mBookingDates;  };
 

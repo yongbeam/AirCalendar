@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 //        intent.setStartDate(2017, 12, 1);
 //        intent.setEndDate(2017, 12, 1);
 //        intent.isMonthLabels(false);
+//        intent.setActiveMonth(3);
+//        intent.setMaxYear(2030);
         startActivityForResult(intent, REQUEST_CODE);
 
     }

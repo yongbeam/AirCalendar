@@ -25,7 +25,6 @@
 package com.yongbeom.aircalendar.core.util;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,92 +83,6 @@ public class AirCalendarUtils {
         }
         return week;
     }
-
-    public static boolean checkStartDateToEndDate(String startDate , String endDate){
-        SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd" );
-        Date day1 = null;
-        Date day2 = null;
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-            day1 = format.parse( startDate );
-            day2 = format.parse( endDate );
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        int compare = day1.compareTo( day2 );
-        if ( compare > 0 )
-        {
-            return true;
-        }
-        else if ( compare < 0 )
-        {
-            return false;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public static int getDiffDay(String startDate , String endDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date sDate;
-        Date eDate;
-        try {
-            sDate = sdf.parse(startDate);
-            eDate = sdf.parse(endDate);
-            return (int)((eDate.getTime() - sDate.getTime()) / 1000 / 60 / 60 / 24);
-        }catch(Exception e) {
-            return 0;
-        }
-    }
-    /**
-     * @param str yyyy-MM-dd 형식
-     * @param i 증가시킬 날
-     * @return yyyy-MM-dd 증가된 날짜
-     * @throws Exception
-     */
-    public static String getAfterDate(String str , int i) throws Exception {
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date sDate =(java.util.Date) formatter.parse(str);
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        cal.setTime(sDate);
-        cal.add(Calendar.DATE, i );
-        String year = Integer.toString(cal.get(Calendar.YEAR)) ;
-        String month = cal.get(Calendar.MONTH) < 9 ? "0" + Integer.toString(cal.get(Calendar.MONTH) +1) : Integer.toString(cal.get(Calendar.MONTH) +1) ;;
-        String date = cal.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + Integer.toString(cal.get(Calendar.DAY_OF_MONTH)) : Integer.toString(cal.get(Calendar.DAY_OF_MONTH)) ;
-        return year + "-" + month + "-" + date;
-    }
-
-    /**
-     * @param org_date
-     * @return
-     */
-    public static String convertMinusDate(String org_date){
-        String resultDate = org_date;
-        try{
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd") ;
-            Date date = dateFormat.parse(org_date) ;
-
-            // 포맷변경 ( 년월일 시분초)
-            SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
-
-            // Java 시간 더하기
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-
-            // 하루 전
-            cal.add(Calendar.DATE, -1);
-            resultDate = sdformat.format(cal.getTime());
-            System.out.println("1일 전 : " + resultDate);
-        }catch (Exception e){
-            resultDate = org_date;
-        }
-        return resultDate;
-    }
-
     /**
      * @param date
      * @param dateType
