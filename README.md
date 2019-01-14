@@ -77,6 +77,7 @@ Airbnb-style calendar
       intent.isMonthLabels(false);  // DEFAULT false
       intent.setActiveMonth(3)      // DEFAULT max year
       intent.setMaxYear(2030)       // DEFAULT 2year
+      intent.setStartYear(2016)     // DEFAULT Current year
 ```
 
 
