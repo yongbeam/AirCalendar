@@ -144,4 +144,8 @@ public class AirCalendarIntent  extends Intent implements Parcelable {
     public void setMaxYear(int maxYear){
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_MAX_YEAR , maxYear);
     }
+
+    public void setStartYear(int startYear){
+        this.putExtra(AirCalendarDatePickerActivity.EXTRA_START_YEAR , startYear);
+    }
 }
