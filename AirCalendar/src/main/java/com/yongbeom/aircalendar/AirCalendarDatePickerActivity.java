@@ -31,9 +31,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.yongbeom.aircalendar.core.AirMonthAdapter;
 import com.yongbeom.aircalendar.core.DatePickerController;
 import com.yongbeom.aircalendar.core.DayPickerView;
-import com.yongbeom.aircalendar.core.AirMonthAdapter;
 import com.yongbeom.aircalendar.core.SelectModel;
 import com.yongbeom.aircalendar.core.util.AirCalendarUtils;
 
@@ -62,6 +62,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     public final static String EXTRA_IS_SINGLE_SELECT = "IS_SINGLE_SELECT";
     public final static String EXTRA_ACTIVE_MONTH_NUM = "ACTIVE_MONTH_NUMBER";
     public final static String EXTRA_MAX_YEAR = "MAX_YEAR";
+    public final static String EXTRA_START_YEAR = "START_YEAR";
 
     public final static String RESULT_SELECT_START_DATE = "start_date";
     public final static String RESULT_SELECT_END_DATE = "end_date";
@@ -102,6 +103,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
     private int maxActivieMonth = -1;
     private int maxYear = -1;
+    private int mSetStartYear = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,25 +111,26 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         setContentView(R.layout.aicalendar_activity_date_picker);
 
         Intent getData = getIntent();
-        FLAG = getData.getStringExtra(EXTRA_FLAG) != null ? getData.getStringExtra(EXTRA_FLAG):"all";
-        isBooking = getData.getBooleanExtra(EXTRA_IS_BOOIKNG , false);
-        isSelect = getData.getBooleanExtra(EXTRA_IS_SELECT , false);
-        isMonthLabel = getData.getBooleanExtra(EXTRA_IS_MONTH_LABEL , false);
-        isSingleSelect = getData.getBooleanExtra(EXTRA_IS_SINGLE_SELECT , false);
+        FLAG = getData.getStringExtra(EXTRA_FLAG) != null ? getData.getStringExtra(EXTRA_FLAG) : "all";
+        isBooking = getData.getBooleanExtra(EXTRA_IS_BOOIKNG, false);
+        isSelect = getData.getBooleanExtra(EXTRA_IS_SELECT, false);
+        isMonthLabel = getData.getBooleanExtra(EXTRA_IS_MONTH_LABEL, false);
+        isSingleSelect = getData.getBooleanExtra(EXTRA_IS_SINGLE_SELECT, false);
         dates = getData.getStringArrayListExtra(EXTRA_BOOKING_DATES);
-        maxActivieMonth = getData.getIntExtra(EXTRA_ACTIVE_MONTH_NUM , -1);
-        maxYear = getData.getIntExtra(EXTRA_MAX_YEAR , -1);
+        maxActivieMonth = getData.getIntExtra(EXTRA_ACTIVE_MONTH_NUM, -1);
+        maxYear = getData.getIntExtra(EXTRA_MAX_YEAR, -1);
+        mSetStartYear = getData.getIntExtra(EXTRA_START_YEAR, -1);
 
-        sYear = getData.getIntExtra(EXTRA_SELECT_DATE_SY , 0);
-        sMonth = getData.getIntExtra(EXTRA_SELECT_DATE_SM , 0);
-        sDay = getData.getIntExtra(EXTRA_SELECT_DATE_SD , 0);
+        sYear = getData.getIntExtra(EXTRA_SELECT_DATE_SY, 0);
+        sMonth = getData.getIntExtra(EXTRA_SELECT_DATE_SM, 0);
+        sDay = getData.getIntExtra(EXTRA_SELECT_DATE_SD, 0);
 
-        eYear = getData.getIntExtra(EXTRA_SELECT_DATE_EY , 0);
-        eMonth = getData.getIntExtra(EXTRA_SELECT_DATE_EM , 0);
-        eDay = getData.getIntExtra(EXTRA_SELECT_DATE_ED , 0);
+        eYear = getData.getIntExtra(EXTRA_SELECT_DATE_EY, 0);
+        eMonth = getData.getIntExtra(EXTRA_SELECT_DATE_EM, 0);
+        eDay = getData.getIntExtra(EXTRA_SELECT_DATE_ED, 0);
 
-        if(sYear == 0 || sMonth == 0 || sDay == 0
-                || eYear == 0 || eMonth == 0 || eDay == 0){
+        if (sYear == 0 || sMonth == 0 || sDay == 0
+                || eYear == 0 || eMonth == 0 || eDay == 0) {
             selectDate = new SelectModel();
             isSelect = false;
         }
@@ -137,7 +140,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
     }
 
-    private void init(){
+    private void init() {
 
         rl_done_btn = findViewById(R.id.rl_done_btn);
         tv_start_date = findViewById(R.id.tv_start_date);
@@ -153,24 +156,25 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         pickerView.setIsMonthDayLabel(isMonthLabel);
         pickerView.setIsSingleSelect(isSingleSelect);
         pickerView.setMaxActiveMonth(maxActivieMonth);
+        pickerView.setStartYear(mSetStartYear);
 
-        SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy", Locale.KOREA );
-        Date currentTime = new Date ( );
-        String dTime = formatter.format ( currentTime );
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy", Locale.KOREA);
+        Date currentTime = new Date();
+        String dTime = formatter.format(currentTime);
 
-        if(maxYear != -1 && maxYear > Integer.parseInt(new DateTime().toString("yyyy"))){
+        if (maxYear != -1 && maxYear > Integer.parseInt(new DateTime().toString("yyyy"))) {
             BASE_YEAR = maxYear;
-        }else{
+        } else {
             // default : now year + 2 year
             BASE_YEAR = Integer.valueOf(dTime) + 2;
         }
 
-        if(dates != null && dates.size() != 0 && isBooking){
+        if (dates != null && dates.size() != 0 && isBooking) {
             pickerView.setShowBooking(true);
             pickerView.setBookingDateArray(dates);
         }
 
-        if(isSelect){
+        if (isSelect) {
             selectDate = new SelectModel();
             selectDate.setSelectd(true);
             selectDate.setFristYear(sYear);
@@ -188,15 +192,15 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         rl_done_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if((SELECT_START_DATE == null || SELECT_START_DATE.equals("")) && (SELECT_END_DATE == null || SELECT_END_DATE.equals(""))){
+                if ((SELECT_START_DATE == null || SELECT_START_DATE.equals("")) && (SELECT_END_DATE == null || SELECT_END_DATE.equals(""))) {
                     SELECT_START_DATE = "";
                     SELECT_END_DATE = "";
-                }else{
-                    if(SELECT_START_DATE == null || SELECT_START_DATE.equals("")){
+                } else {
+                    if (SELECT_START_DATE == null || SELECT_START_DATE.equals("")) {
                         tv_popup_msg.setText("Please select all dates.");
                         rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
                         return;
-                    }else if(SELECT_END_DATE == null || SELECT_END_DATE.equals("")){
+                    } else if (SELECT_END_DATE == null || SELECT_END_DATE.equals("")) {
                         tv_popup_msg.setText("Please select all dates.");
                         rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
                         return;
@@ -205,14 +209,14 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
 
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra(RESULT_SELECT_START_DATE , SELECT_START_DATE );
-                resultIntent.putExtra(RESULT_SELECT_END_DATE , SELECT_END_DATE );
-                resultIntent.putExtra(RESULT_SELECT_START_VIEW_DATE , tv_start_date.getText().toString() );
-                resultIntent.putExtra(RESULT_SELECT_END_VIEW_DATE , tv_end_date.getText().toString() );
-                resultIntent.putExtra(RESULT_FLAG , FLAG );
-                resultIntent.putExtra(RESULT_TYPE , FLAG );
-                resultIntent.putExtra(RESULT_STATE , "done" );
-                setResult(RESULT_OK , resultIntent);
+                resultIntent.putExtra(RESULT_SELECT_START_DATE, SELECT_START_DATE);
+                resultIntent.putExtra(RESULT_SELECT_END_DATE, SELECT_END_DATE);
+                resultIntent.putExtra(RESULT_SELECT_START_VIEW_DATE, tv_start_date.getText().toString());
+                resultIntent.putExtra(RESULT_SELECT_END_VIEW_DATE, tv_end_date.getText().toString());
+                resultIntent.putExtra(RESULT_FLAG, FLAG);
+                resultIntent.putExtra(RESULT_TYPE, FLAG);
+                resultIntent.putExtra(RESULT_STATE, "done");
+                setResult(RESULT_OK, resultIntent);
                 finish();
             }
         });
@@ -250,21 +254,21 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     @Override
     public void onDayOfMonthSelected(int year, int month, int day) {
         // TODO Single Select Event
-        try{
-            String start_month_str =  String.format("%02d" , (month+1));
+        try {
+            String start_month_str = String.format("%02d", (month + 1));
             // 일
-            String start_day_str =  String.format("%02d" , day);
-            String startSetDate = year+start_month_str+start_day_str;
+            String start_day_str = String.format("%02d", day);
+            String startSetDate = year + start_month_str + start_day_str;
 
-            String startDateDay = AirCalendarUtils.getDateDay(startSetDate , "yyyyMMdd");
+            String startDateDay = AirCalendarUtils.getDateDay(startSetDate, "yyyyMMdd");
 
-            tv_start_date.setText(year+"-"+start_month_str+"-"+start_day_str + " " + startDateDay);
+            tv_start_date.setText(year + "-" + start_month_str + "-" + start_day_str + " " + startDateDay);
             tv_start_date.setTextColor(0xff4a4a4a);
 
             tv_end_date.setText("-");
             tv_end_date.setTextColor(0xff1abc9c);
             SELECT_END_DATE = "";
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -272,35 +276,35 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     @Override
     public void onDateRangeSelected(AirMonthAdapter.SelectedDays<AirMonthAdapter.CalendarDay> selectedDays) {
 
-        try{
+        try {
             Calendar cl = Calendar.getInstance();
 
             cl.setTimeInMillis(selectedDays.getFirst().getDate().getTime());
 
             // 월
-            int start_month_int = (cl.get(Calendar.MONTH)+1);
-            String start_month_str =  String.format("%02d" , start_month_int);
+            int start_month_int = (cl.get(Calendar.MONTH) + 1);
+            String start_month_str = String.format("%02d", start_month_int);
 
             // 일
             int start_day_int = cl.get(Calendar.DAY_OF_MONTH);
-            String start_day_str =  String.format("%02d" , start_day_int);
+            String start_day_str = String.format("%02d", start_day_int);
 
-            String startSetDate = cl.get(Calendar.YEAR)+start_month_str+start_day_str;
-            String startDateDay = AirCalendarUtils.getDateDay(startSetDate , "yyyyMMdd");
+            String startSetDate = cl.get(Calendar.YEAR) + start_month_str + start_day_str;
+            String startDateDay = AirCalendarUtils.getDateDay(startSetDate, "yyyyMMdd");
             String startDate = cl.get(Calendar.YEAR) + "-" + start_month_str + "-" + start_day_str;
 
             cl.setTimeInMillis(selectedDays.getLast().getDate().getTime());
 
             // 월
-            int end_month_int = (cl.get(Calendar.MONTH)+1);
-            String end_month_str = String.format("%02d" , end_month_int);
+            int end_month_int = (cl.get(Calendar.MONTH) + 1);
+            String end_month_str = String.format("%02d", end_month_int);
 
             // 일
             int end_day_int = cl.get(Calendar.DAY_OF_MONTH);
-            String end_day_str = String.format("%02d" , end_day_int);
+            String end_day_str = String.format("%02d", end_day_int);
 
-            String endSetDate = cl.get(Calendar.YEAR)+end_month_str+end_day_str;
-            String endDateDay = AirCalendarUtils.getDateDay(endSetDate , "yyyyMMdd");
+            String endSetDate = cl.get(Calendar.YEAR) + end_month_str + end_day_str;
+            String endDateDay = AirCalendarUtils.getDateDay(endSetDate, "yyyyMMdd");
             String endDate = cl.get(Calendar.YEAR) + "-" + end_month_str + "-" + end_day_str;
 
             tv_start_date.setText(startDate + " " + startDateDay);
@@ -312,7 +316,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             SELECT_START_DATE = startDate;
             SELECT_END_DATE = endDate;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
