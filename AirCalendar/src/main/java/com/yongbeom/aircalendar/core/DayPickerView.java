@@ -26,8 +26,8 @@ package com.yongbeom.aircalendar.core;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.yongbeom.aircalendar.R;
@@ -38,14 +38,15 @@ public class DayPickerView extends RecyclerView {
     private DatePickerController mController;
 
     protected Context mContext;
-	protected AirMonthAdapter mAdapter;
+    protected AirMonthAdapter mAdapter;
     protected int mCurrentScrollState = 0;
-	protected long mPreviousScrollPosition;
-	protected int mPreviousScrollState = 0;
+    protected long mPreviousScrollPosition;
+    protected int mPreviousScrollState = 0;
     protected int mMaxActiveMonth = -1;
     protected boolean isBooking = false;
     protected boolean isMonthDayLabels = false;
     protected boolean isSingleSelect = false;
+    protected int mSetStartYear = -1;
     protected ArrayList<String> mBookingDates;
 
     private TypedArray typedArray;
@@ -53,73 +54,81 @@ public class DayPickerView extends RecyclerView {
     private SelectModel mSelectModel = null;
 
 
-    public DayPickerView(Context context)
-    {
+    public DayPickerView(Context context) {
         this(context, null);
     }
 
-    public DayPickerView(Context context, AttributeSet attrs)
-    {
+    public DayPickerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public DayPickerView(Context context, AttributeSet attrs, int defStyle)
-    {
+    public DayPickerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        if (!isInEditMode())
-        {
+        if (!isInEditMode()) {
             typedArray = context.obtainStyledAttributes(attrs, R.styleable.DayPickerView);
             setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             init(context);
         }
     }
 
-    public void setController(DatePickerController mController)
-    {
+    public void setController(DatePickerController mController) {
         this.mController = mController;
         setUpAdapter();
         setAdapter(mAdapter);
     }
 
-    public void setShowBooking(boolean isbooking){
+    public void setShowBooking(boolean isbooking) {
         this.isBooking = isbooking;
     }
 
-    public void setBookingDateArray(ArrayList<String> dates){this.mBookingDates = dates;}
+    public void setBookingDateArray(ArrayList<String> dates) {
+        this.mBookingDates = dates;
+    }
 
-    public void setSelected(SelectModel date){
+    public void setSelected(SelectModel date) {
         this.mSelectModel = date;
     }
 
-    public void setIsMonthDayLabel(boolean isLabel) { this.isMonthDayLabels = isLabel; }
+    public void setIsMonthDayLabel(boolean isLabel) {
+        this.isMonthDayLabels = isLabel;
+    }
 
-    public void setIsSingleSelect(boolean isSingle) { this.isSingleSelect = isSingle; }
+    public void setIsSingleSelect(boolean isSingle) {
+        this.isSingleSelect = isSingle;
+    }
 
-    public void setMaxActiveMonth(int maxActiveMonth){ this.mMaxActiveMonth = maxActiveMonth; }
+    public void setMaxActiveMonth(int maxActiveMonth) {
+        this.mMaxActiveMonth = maxActiveMonth;
+    }
 
-    public void setMonthDayLabels(boolean monthDayLabels){ this.isMonthDayLabels = monthDayLabels; }
+    public void setMonthDayLabels(boolean monthDayLabels) {
+        this.isMonthDayLabels = monthDayLabels;
+    }
 
-	public void init(Context paramContext) {
+    public void setStartYear(int startYear) {
+        this.mSetStartYear = startYear;
+    }
+
+    public void init(Context paramContext) {
         setLayoutManager(new LinearLayoutManager(paramContext));
-		mContext = paramContext;
+        mContext = paramContext;
         setUpListView();
-	}
+    }
 
-	protected void setUpAdapter() {
-		if (mAdapter == null) {
-			mAdapter = new AirMonthAdapter(getContext(), mController, typedArray , isBooking , isMonthDayLabels , isSingleSelect , mBookingDates , mSelectModel , mMaxActiveMonth);
+    protected void setUpAdapter() {
+        if (mAdapter == null) {
+            mAdapter = new AirMonthAdapter(getContext(), mController, typedArray, isBooking, isMonthDayLabels, isSingleSelect, mBookingDates, mSelectModel, mMaxActiveMonth, mSetStartYear);
         }
-		mAdapter.notifyDataSetChanged();
-	}
+        mAdapter.notifyDataSetChanged();
+    }
 
 
-	protected void setUpListView() {
-		setVerticalScrollBarEnabled(false);
+    protected void setUpListView() {
+        setVerticalScrollBarEnabled(false);
 
-        onScrollListener = new OnScrollListener(){
+        onScrollListener = new OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 final AirMonthView child = (AirMonthView) recyclerView.getChildAt(0);
                 if (child == null) {
@@ -131,21 +140,25 @@ public class DayPickerView extends RecyclerView {
             }
         };
 
-		addOnScrollListener(onScrollListener);
-		setFadingEdgeLength(0);
-	}
+        addOnScrollListener(onScrollListener);
+        setFadingEdgeLength(0);
+    }
 
-    public AirMonthAdapter.SelectedDays<AirMonthAdapter.CalendarDay> getSelectedDays() { return mAdapter.getSelectedDays();}
+    public AirMonthAdapter.SelectedDays<AirMonthAdapter.CalendarDay> getSelectedDays() {
+        return mAdapter.getSelectedDays();
+    }
 
-    public ArrayList<String> getBookingDates(){ return this.mBookingDates;  };
+    public ArrayList<String> getBookingDates() {
+        return this.mBookingDates;
+    }
 
-    protected DatePickerController getController()
-    {
+    ;
+
+    protected DatePickerController getController() {
         return mController;
     }
 
-    protected TypedArray getTypedArray()
-    {
+    protected TypedArray getTypedArray() {
         return typedArray;
     }
 }
