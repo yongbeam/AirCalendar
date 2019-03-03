@@ -30,16 +30,16 @@ public class MainActivity extends AppCompatActivity {
         intent.setSelectButtonText("Select");
         intent.setResetBtnText("Reset");
         intent.setWeekStart(Calendar.MONDAY);
-        ArrayList<String> weekDay = new ArrayList<>();
-        weekDay.add("M");
-        weekDay.add("T");
-        weekDay.add("W");
-        weekDay.add("T");
-        weekDay.add("F");
-        weekDay.add("S");
-        weekDay.add("S");
+//        ArrayList<String> weekDay = new ArrayList<>();
+//        weekDay.add("M");
+//        weekDay.add("T");
+//        weekDay.add("W");
+//        weekDay.add("T");
+//        weekDay.add("F");
+//        weekDay.add("S");
+//        weekDay.add("S");
 //        intent.setCustomWeekDays(weekDay);
-        intent.setWeekDaysLanguage(AirCalendarIntent.Language.EN);
+//        intent.setWeekDaysLanguage(AirCalendarIntent.Language.EN);
 //        intent.isSingleSelect(false);
 //        intent.isBooking(false); // DEFAULT false
 //        intent.isSelect(true); // DEFAULT false

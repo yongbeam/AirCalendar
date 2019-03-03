@@ -26,7 +26,10 @@ package com.yongbeom.aircalendar;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -205,22 +208,54 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
                     weekDays.addAll(enList);
                     break;
                 case KO:
-                    List<String> koList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.label_calendar_en)));
+                    List<String> koList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.label_calender_week)));
                     weekDays.addAll(koList);
                     break;
             }
         }
 
-        if(weekDays.isEmpty()) {
+        firstDayOfWeek = getIntent().getIntExtra(WEEK_START, Calendar.SUNDAY);
+
+        if (weekDays.isEmpty()) {
             throw new RuntimeException("Language not supported or non existent");
         } else {
-            tv_day_one.setText(weekDays.get(0));
-            tv_day_two.setText(weekDays.get(1));
-            tv_day_three.setText(weekDays.get(2));
-            tv_day_four.setText(weekDays.get(3));
-            tv_day_five.setText(weekDays.get(4));
-            tv_day_six.setText(weekDays.get(5));
-            tv_day_seven.setText(weekDays.get(6));
+            int weekStart = firstDayOfWeek - 2;
+
+            for (int week = 0; week < 7; week++) {
+                int weekDay = weekStart + week;
+                if (weekDay < 0) {
+                    weekDay += 7;
+                }
+                if (weekDay > 6) {
+                    weekDay -= 7;
+                }
+                Log.d("DOW", week + "/" + weekDay+":" + weekDays.get(weekDay));
+                switch (week) {
+                    case 0:
+                        tv_day_one.setText(weekDays.get(weekDay));
+                        break;
+                    case 1:
+                        tv_day_two.setText(weekDays.get(weekDay));
+                        break;
+                    case 2:
+                        tv_day_three.setText(weekDays.get(weekDay));
+                        break;
+                    case 3:
+                        tv_day_four.setText(weekDays.get(weekDay));
+                        break;
+                    case 4:
+                        tv_day_five.setText(weekDays.get(weekDay));
+                        break;
+                    case 5:
+                        tv_day_six.setText(weekDays.get(weekDay));
+                        break;
+                    case 6:
+                        tv_day_seven.setText(weekDays.get(weekDay));
+                        break;
+
+                }
+            }
+
         }
 
         pickerView = findViewById(R.id.pickerView);
@@ -229,7 +264,6 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         pickerView.setMaxActiveMonth(maxActivieMonth);
         pickerView.setStartYear(mSetStartYear);
 
-        firstDayOfWeek = getIntent().getIntExtra(WEEK_START,Calendar.SUNDAY);
         pickerView.setFirstDayOfWeek(firstDayOfWeek);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy", Locale.KOREA);

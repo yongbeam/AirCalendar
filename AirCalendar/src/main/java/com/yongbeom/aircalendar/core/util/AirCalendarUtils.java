@@ -109,6 +109,12 @@ public class AirCalendarUtils {
         cal.setFirstDayOfWeek(weekStart);
         cal.setTime(nDate);
         int dayNum = cal.get(Calendar.DAY_OF_WEEK);
+        if (dayNum == 1) {
+            dayNum = 6;
+        } else {
+            dayNum-=2;
+        }
+
         if (airCalendarWeekdays.isEmpty()) {
             switch (airCalendarLanguage) {
                 case KO:
@@ -122,7 +128,7 @@ public class AirCalendarUtils {
             }
             return day ;
         } else {
-            return airCalendarWeekdays.get(dayNum-1);
+            return airCalendarWeekdays.get(dayNum);
         }
     }
 
