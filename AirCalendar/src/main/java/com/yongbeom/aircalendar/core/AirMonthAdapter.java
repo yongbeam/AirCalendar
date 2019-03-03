@@ -69,10 +69,13 @@ public class AirMonthAdapter extends RecyclerView.Adapter<AirMonthAdapter.ViewHo
                            boolean isSingle, ArrayList<String> bookingDates,
                            SelectModel selectedDay,
                            int maxActiveMonth,
-                           int startYear) {
+                           int startYear,
+                           int firstDayOfWeek
+    ) {
 
         this.typedArray = typedArray;
         calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(firstDayOfWeek);
         firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH));
         lastMonth = typedArray.getInt(R.styleable.DayPickerView_lastMonth, (calendar.get(Calendar.MONTH) - 1) % MONTHS_IN_YEAR);
         mCanSelectBeforeDay = typedArray.getBoolean(R.styleable.DayPickerView_canSelectBeforeDay, false);

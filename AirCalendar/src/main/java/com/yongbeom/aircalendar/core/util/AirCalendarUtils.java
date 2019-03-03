@@ -24,13 +24,24 @@
  ***********************************************************************************/
 package com.yongbeom.aircalendar.core.util;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.yongbeom.aircalendar.R;
+import com.yongbeom.aircalendar.core.AirCalendarIntent;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class AirCalendarUtils {
+
+    private static List<String> airCalendarWeekdays = new ArrayList<>();
+    private static AirCalendarIntent.Language airCalendarLanguage = AirCalendarIntent.Language.KO;
 
     /**
      * @return
@@ -83,43 +94,45 @@ public class AirCalendarUtils {
         }
         return week;
     }
+
     /**
      * @param date
      * @param dateType
      * @return
      * @throws Exception
      */
-    public static String getDateDay(String date, String dateType) throws Exception {
+    public static String getDateDay(Context context, String date, String dateType, int weekStart) throws Exception {
         String day = "" ;
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateType) ;
         Date nDate = dateFormat.parse(date) ;
         Calendar cal = Calendar.getInstance() ;
+        cal.setFirstDayOfWeek(weekStart);
         cal.setTime(nDate);
-        int dayNum = cal.get(Calendar.DAY_OF_WEEK) ;
-        switch(dayNum){
-            case 1:
-                day = "일";
-                break ;
-            case 2:
-                day = "월";
-                break ;
-            case 3:
-                day = "화";
-                break ;
-            case 4:
-                day = "수";
-                break ;
-            case 5:
-                day = "목";
-                break ;
-            case 6:
-                day = "금";
-                break ;
-            case 7:
-                day = "토";
-                break ;
+        int dayNum = cal.get(Calendar.DAY_OF_WEEK);
+        if (airCalendarWeekdays.isEmpty()) {
+            switch (airCalendarLanguage) {
+                case KO:
+                    String[] weekdaysKo = context.getResources().getStringArray(R.array.label_calender_week);
+                    day = weekdaysKo[dayNum];
+                    break;
+                case EN:
+                    String[] weekdaysEn = context.getResources().getStringArray(R.array.label_calendar_en);
+                    day = weekdaysEn[dayNum];
+                    break;
+            }
+            return day ;
+        } else {
+            return airCalendarWeekdays.get(dayNum-1);
         }
-        return day ;
+    }
+
+    public static void setWeekdays(List<String> weekdays) {
+        airCalendarWeekdays.clear();
+        airCalendarWeekdays.addAll(weekdays);
+    }
+
+    public static void setLanguage(AirCalendarIntent.Language language) {
+        airCalendarLanguage = language;
     }
 
 }

@@ -11,6 +11,10 @@ import android.widget.Toast;
 import com.yongbeom.aircalendar.AirCalendarDatePickerActivity;
 import com.yongbeom.aircalendar.core.AirCalendarIntent;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     public final static int REQUEST_CODE = 1;
 
@@ -23,6 +27,19 @@ public class MainActivity extends AppCompatActivity {
 
 
         AirCalendarIntent intent = new AirCalendarIntent(this);
+        intent.setSelectButtonText("Select");
+        intent.setResetBtnText("Reset");
+        intent.setWeekStart(Calendar.MONDAY);
+        ArrayList<String> weekDay = new ArrayList<>();
+        weekDay.add("M");
+        weekDay.add("T");
+        weekDay.add("W");
+        weekDay.add("T");
+        weekDay.add("F");
+        weekDay.add("S");
+        weekDay.add("S");
+//        intent.setCustomWeekDays(weekDay);
+        intent.setWeekDaysLanguage(AirCalendarIntent.Language.EN);
 //        intent.isSingleSelect(false);
 //        intent.isBooking(false); // DEFAULT false
 //        intent.isSelect(true); // DEFAULT false
