@@ -26,9 +26,7 @@ package com.yongbeom.aircalendar;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -50,6 +48,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 
 public class AirCalendarDatePickerActivity extends AppCompatActivity implements DatePickerController {

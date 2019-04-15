@@ -157,8 +157,6 @@ public class DayPickerView extends RecyclerView {
         return this.mBookingDates;
     }
 
-    ;
-
     protected DatePickerController getController() {
         return mController;
     }
