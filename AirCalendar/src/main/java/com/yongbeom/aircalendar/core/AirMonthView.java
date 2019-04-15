@@ -446,33 +446,31 @@ class AirMonthView extends View {
                 mMonthNumPaint.setColor(mSelectedDaysColor);
             }
 
-            if ((mSelectedBeginDay != -1 && mSelectedLastDay != -1 && mSelectedBeginYear == mSelectedLastYear && mSelectedBeginYear == mYear) &&
-                    (((mMonth == mSelectedBeginMonth && mSelectedLastMonth == mSelectedBeginMonth) && ((mSelectedBeginDay < mSelectedLastDay && day > mSelectedBeginDay && day < mSelectedLastDay) || (mSelectedBeginDay > mSelectedLastDay && day < mSelectedBeginDay && day > mSelectedLastDay))) ||
+            if (mSelectedBeginDay != -1 && mSelectedLastDay != -1) {
+                if (mSelectedBeginYear == mSelectedLastYear && mSelectedBeginYear == mYear) {
+                    if (((mMonth == mSelectedBeginMonth && mSelectedLastMonth == mSelectedBeginMonth) && ((mSelectedBeginDay < mSelectedLastDay && day > mSelectedBeginDay && day < mSelectedLastDay) || (mSelectedBeginDay > mSelectedLastDay && day < mSelectedBeginDay && day > mSelectedLastDay))) ||
                             ((mSelectedBeginMonth < mSelectedLastMonth && mMonth == mSelectedBeginMonth && day > mSelectedBeginDay) || (mSelectedBeginMonth < mSelectedLastMonth && mMonth == mSelectedLastMonth && day < mSelectedLastDay)) ||
-                            ((mSelectedBeginMonth > mSelectedLastMonth && mMonth == mSelectedBeginMonth && day < mSelectedBeginDay) || (mSelectedBeginMonth > mSelectedLastMonth && mMonth == mSelectedLastMonth && day > mSelectedLastDay)))) {
-                mMonthNumPaint.setColor(mSelectedDaysColor);
-                drawSelectorIntervalDayBackground(canvas, x, y, bgw);
-            }
+                            ((mSelectedBeginMonth > mSelectedLastMonth && mMonth == mSelectedBeginMonth && day < mSelectedBeginDay) || (mSelectedBeginMonth > mSelectedLastMonth && mMonth == mSelectedLastMonth && day > mSelectedLastDay))) {
+                        mMonthNumPaint.setColor(mSelectedDaysColor);
+                        drawSelectorIntervalDayBackground(canvas, x, y, bgw);
+                    }
 
-            if ((mSelectedBeginDay != -1 && mSelectedLastDay != -1 && mSelectedBeginYear != mSelectedLastYear && ((mSelectedBeginYear == mYear && mMonth == mSelectedBeginMonth) || (mSelectedLastYear == mYear && mMonth == mSelectedLastMonth)) &&
-                    (((mSelectedBeginMonth < mSelectedLastMonth && mMonth == mSelectedBeginMonth && day < mSelectedBeginDay) || (mSelectedBeginMonth < mSelectedLastMonth && mMonth == mSelectedLastMonth && day > mSelectedLastDay)) ||
-                            ((mSelectedBeginMonth > mSelectedLastMonth && mMonth == mSelectedBeginMonth && day > mSelectedBeginDay) || (mSelectedBeginMonth > mSelectedLastMonth && mMonth == mSelectedLastMonth && day < mSelectedLastDay))))) {
-                mMonthNumPaint.setColor(mSelectedDaysColor);
-                drawSelectorIntervalDayBackground(canvas, x, y, bgw);
-            }
-
-            if ((mSelectedBeginDay != -1 && mSelectedLastDay != -1 && mSelectedBeginYear == mSelectedLastYear && mYear == mSelectedBeginYear) &&
-                    ((mMonth > mSelectedBeginMonth && mMonth < mSelectedLastMonth && mSelectedBeginMonth < mSelectedLastMonth) ||
-                            (mMonth < mSelectedBeginMonth && mMonth > mSelectedLastMonth && mSelectedBeginMonth > mSelectedLastMonth))) {
-                mMonthNumPaint.setColor(mSelectedDaysColor);
-                drawSelectorIntervalDayBackground(canvas, x, y, bgw);
-            }
-
-            if ((mSelectedBeginDay != -1 && mSelectedLastDay != -1 && mSelectedBeginYear != mSelectedLastYear) &&
-                    ((mSelectedBeginYear < mSelectedLastYear && ((mMonth > mSelectedBeginMonth && mYear == mSelectedBeginYear) || (mMonth < mSelectedLastMonth && mYear == mSelectedLastYear))) ||
-                            (mSelectedBeginYear > mSelectedLastYear && ((mMonth < mSelectedBeginMonth && mYear == mSelectedBeginYear) || (mMonth > mSelectedLastMonth && mYear == mSelectedLastYear))))) {
-                mMonthNumPaint.setColor(mSelectedDaysColor);
-                drawSelectorIntervalDayBackground(canvas, x, y, bgw);
+                    if ((mMonth > mSelectedBeginMonth && mMonth < mSelectedLastMonth && mSelectedBeginMonth < mSelectedLastMonth) || (mMonth < mSelectedBeginMonth && mMonth > mSelectedLastMonth && mSelectedBeginMonth > mSelectedLastMonth)) {
+                        mMonthNumPaint.setColor(mSelectedDaysColor);
+                        drawSelectorIntervalDayBackground(canvas, x, y, bgw);
+                    }
+                }
+                if (mSelectedBeginYear != mSelectedLastYear) {
+                    if ((mSelectedBeginYear == mYear && mSelectedBeginMonth == mMonth && mSelectedBeginDay < day) || (mSelectedLastYear == mYear && mSelectedLastMonth == mMonth && mSelectedLastDay > day)) {
+                        mMonthNumPaint.setColor(mSelectedDaysColor);
+                        drawSelectorIntervalDayBackground(canvas, x, y, bgw);
+                    }
+                    if ((mSelectedBeginYear < mSelectedLastYear && ((mMonth > mSelectedBeginMonth && mYear == mSelectedBeginYear) || (mMonth < mSelectedLastMonth && mYear == mSelectedLastYear))) ||
+                            (mSelectedBeginYear > mSelectedLastYear && ((mMonth < mSelectedBeginMonth && mYear == mSelectedBeginYear) || (mMonth > mSelectedLastMonth && mYear == mSelectedLastYear)))) {
+                        mMonthNumPaint.setColor(mSelectedDaysColor);
+                        drawSelectorIntervalDayBackground(canvas, x, y, bgw);
+                    }
+                }
             }
 
             if (!isPrevDayEnabled && prevDay(day, today) && today.month == mMonth && today.year == mYear) {
