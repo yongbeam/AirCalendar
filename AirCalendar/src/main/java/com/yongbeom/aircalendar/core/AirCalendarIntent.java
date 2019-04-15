@@ -32,8 +32,14 @@ import android.os.Parcelable;
 import com.yongbeom.aircalendar.AirCalendarDatePickerActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AirCalendarIntent  extends Intent implements Parcelable {
+
+    public enum Language {
+        EN,
+        KO
+    }
 
     private AirCalendarIntent() {
     }
@@ -73,6 +79,44 @@ public class AirCalendarIntent  extends Intent implements Parcelable {
      */
     public void isSingleSelect(boolean isSingle) {
         this.putExtra(AirCalendarDatePickerActivity.EXTRA_IS_SINGLE_SELECT, isSingle);
+    }
+
+    /**
+     * Sets the select button text
+     */
+    public void setSelectButtonText(String selectText) {
+        this.putExtra(AirCalendarDatePickerActivity.SELECT_TEXT, selectText);
+    }
+
+    /**
+     * Sets the reset button text
+     */
+    public void setResetBtnText(String resetBtnText) {
+        this.putExtra(AirCalendarDatePickerActivity.RESET_TEXT, resetBtnText);
+    }
+
+
+    /**
+     * Provide a list with the weekdays for unsupported languages
+     * @param weekDay a list array
+     */
+    public void setCustomWeekDays(ArrayList<String> weekDay) {
+        if (weekDay.size() != 7) {
+            throw new RuntimeException("Week days must be exactly seven. Currently you have: " + weekDay.size());
+        }
+        this.putStringArrayListExtra(AirCalendarDatePickerActivity.CUSTOM_WEEK_ABREVIATIONS, weekDay);
+    }
+
+    /**
+     * Provide a default language
+     * if no parameter is specified, it will default to Korean
+     */
+    public void setWeekDaysLanguage(Language language) {
+        this.putExtra(AirCalendarDatePickerActivity.WEEK_LANGUAGE, language.toString());
+    }
+
+    public void setWeekStart(int weekStart) {
+        this.putExtra(AirCalendarDatePickerActivity.WEEK_START, weekStart);
     }
 
     /**

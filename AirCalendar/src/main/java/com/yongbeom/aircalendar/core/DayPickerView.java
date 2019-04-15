@@ -47,6 +47,7 @@ public class DayPickerView extends RecyclerView {
     protected boolean isMonthDayLabels = false;
     protected boolean isSingleSelect = false;
     protected int mSetStartYear = -1;
+    protected int mFirstDayOfWeek;
     protected ArrayList<String> mBookingDates;
 
     private TypedArray typedArray;
@@ -109,6 +110,10 @@ public class DayPickerView extends RecyclerView {
         this.mSetStartYear = startYear;
     }
 
+    public void setFirstDayOfWeek(int firstDayOfWeek) {
+        this.mFirstDayOfWeek = firstDayOfWeek;
+    }
+
     public void init(Context paramContext) {
         setLayoutManager(new LinearLayoutManager(paramContext));
         mContext = paramContext;
@@ -117,7 +122,7 @@ public class DayPickerView extends RecyclerView {
 
     protected void setUpAdapter() {
         if (mAdapter == null) {
-            mAdapter = new AirMonthAdapter(getContext(), mController, typedArray, isBooking, isMonthDayLabels, isSingleSelect, mBookingDates, mSelectModel, mMaxActiveMonth, mSetStartYear);
+            mAdapter = new AirMonthAdapter(getContext(), mController, typedArray, isBooking, isMonthDayLabels, isSingleSelect, mBookingDates, mSelectModel, mMaxActiveMonth, mSetStartYear, mFirstDayOfWeek);
         }
         mAdapter.notifyDataSetChanged();
     }

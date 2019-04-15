@@ -26,10 +26,13 @@ package com.yongbeom.aircalendar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.yongbeom.aircalendar.core.AirCalendarIntent;
 import com.yongbeom.aircalendar.core.AirMonthAdapter;
 import com.yongbeom.aircalendar.core.DatePickerController;
 import com.yongbeom.aircalendar.core.DayPickerView;
@@ -40,8 +43,10 @@ import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,6 +70,12 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     public final static String EXTRA_MAX_YEAR = "MAX_YEAR";
     public final static String EXTRA_START_YEAR = "START_YEAR";
 
+    public final static String SELECT_TEXT = "SELECT_TEXT";
+    public final static String RESET_TEXT = "RESET_TEXT";
+    public final static String CUSTOM_WEEK_ABREVIATIONS = "CUSTOM_WEEK_ABREVIATIONS";
+    public final static String WEEK_LANGUAGE = "WEEK_LANGUAGE";
+    public final static String WEEK_START = "WEEK_START";
+
     public final static String RESULT_SELECT_START_DATE = "start_date";
     public final static String RESULT_SELECT_END_DATE = "end_date";
     public final static String RESULT_SELECT_START_VIEW_DATE = "start_date_view";
@@ -77,8 +88,17 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     private TextView tv_start_date;
     private TextView tv_end_date;
     private TextView tv_popup_msg;
-    private RelativeLayout rl_done_btn;
-    private RelativeLayout rl_reset_btn;
+    private TextView tv_done_btn;
+    private TextView tv_reset_btn;
+
+    private TextView tv_day_one;
+    private TextView tv_day_two;
+    private TextView tv_day_three;
+    private TextView tv_day_four;
+    private TextView tv_day_five;
+    private TextView tv_day_six;
+    private TextView tv_day_seven;
+
     private RelativeLayout rl_popup_select_checkout_info_ok;
     private RelativeLayout rl_checkout_select_info_popup;
     private RelativeLayout rl_iv_back_btn_bg;
@@ -86,12 +106,14 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     private String SELECT_START_DATE = "";
     private String SELECT_END_DATE = "";
     private int BASE_YEAR = 2018;
+    private int firstDayOfWeek = Calendar.SUNDAY;
 
     private String FLAG = "all";
     private boolean isSelect = false;
     private boolean isBooking = false;
     private boolean isMonthLabel = false;
     private boolean isSingleSelect = false;
+    private List<String> weekDays = new ArrayList<>();
     private ArrayList<String> dates;
     private SelectModel selectDate;
 
@@ -101,6 +123,8 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     private int eYear = 0;
     private int eMonth = 0;
     private int eDay = 0;
+
+    private AirCalendarIntent.Language language = AirCalendarIntent.Language.KO;
 
     private int maxActivieMonth = -1;
     private int maxYear = -1;
@@ -136,28 +160,111 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             isSelect = false;
         }
 
+        if (getIntent().hasExtra(CUSTOM_WEEK_ABREVIATIONS)) {
+            weekDays.clear();
+            weekDays.addAll(getIntent().getStringArrayListExtra(CUSTOM_WEEK_ABREVIATIONS));
+            AirCalendarUtils.setWeekdays(weekDays);
+        }
+
+        if (getIntent().hasExtra(WEEK_LANGUAGE)) {
+            language = AirCalendarIntent.Language.valueOf(getIntent().getStringExtra(WEEK_LANGUAGE));
+            AirCalendarUtils.setLanguage(language);
+        }
 
         init();
 
     }
 
     private void init() {
-
-        rl_done_btn = findViewById(R.id.rl_done_btn);
+        tv_done_btn = findViewById(R.id.rl_done_btn);
         tv_start_date = findViewById(R.id.tv_start_date);
         tv_end_date = findViewById(R.id.tv_end_date);
         tv_popup_msg = findViewById(R.id.tv_popup_msg);
         rl_checkout_select_info_popup = findViewById(R.id.rl_checkout_select_info_popup);
-        rl_reset_btn = findViewById(R.id.rl_reset_btn);
+        tv_reset_btn = findViewById(R.id.rl_reset_btn);
         rl_popup_select_checkout_info_ok = findViewById(R.id.rl_popup_select_checkout_info_ok);
         rl_checkout_select_info_popup = findViewById(R.id.rl_checkout_select_info_popup);
         rl_iv_back_btn_bg = findViewById(R.id.rl_iv_back_btn_bg);
+
+        tv_day_one = findViewById(R.id.tv_day_one);
+        tv_day_two = findViewById(R.id.tv_day_two);
+        tv_day_three = findViewById(R.id.tv_day_three);
+        tv_day_four = findViewById(R.id.tv_day_four);
+        tv_day_five = findViewById(R.id.tv_day_five);
+        tv_day_six = findViewById(R.id.tv_day_six);
+        tv_day_seven = findViewById(R.id.tv_day_seven);
+
+        if (getIntent().hasExtra(SELECT_TEXT)) {
+            tv_done_btn.setText(getIntent().getStringExtra(SELECT_TEXT));
+        }
+        if (getIntent().hasExtra(RESET_TEXT)) {
+            tv_reset_btn.setText(getIntent().getStringExtra(RESET_TEXT));
+        }
+
+        if (weekDays.isEmpty()) {
+            switch (language) {
+                case EN:
+                    List<String> enList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.label_calendar_en)));
+                    weekDays.addAll(enList);
+                    break;
+                case KO:
+                    List<String> koList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.label_calender_week)));
+                    weekDays.addAll(koList);
+                    break;
+            }
+        }
+
+        firstDayOfWeek = getIntent().getIntExtra(WEEK_START, Calendar.SUNDAY);
+
+        if (weekDays.isEmpty()) {
+            throw new RuntimeException("Language not supported or non existent");
+        } else {
+            int weekStart = firstDayOfWeek - 2;
+
+            for (int week = 0; week < 7; week++) {
+                int weekDay = weekStart + week;
+                if (weekDay < 0) {
+                    weekDay += 7;
+                }
+                if (weekDay > 6) {
+                    weekDay -= 7;
+                }
+                Log.d("DOW", week + "/" + weekDay+":" + weekDays.get(weekDay));
+                switch (week) {
+                    case 0:
+                        tv_day_one.setText(weekDays.get(weekDay));
+                        break;
+                    case 1:
+                        tv_day_two.setText(weekDays.get(weekDay));
+                        break;
+                    case 2:
+                        tv_day_three.setText(weekDays.get(weekDay));
+                        break;
+                    case 3:
+                        tv_day_four.setText(weekDays.get(weekDay));
+                        break;
+                    case 4:
+                        tv_day_five.setText(weekDays.get(weekDay));
+                        break;
+                    case 5:
+                        tv_day_six.setText(weekDays.get(weekDay));
+                        break;
+                    case 6:
+                        tv_day_seven.setText(weekDays.get(weekDay));
+                        break;
+
+                }
+            }
+
+        }
 
         pickerView = findViewById(R.id.pickerView);
         pickerView.setIsMonthDayLabel(isMonthLabel);
         pickerView.setIsSingleSelect(isSingleSelect);
         pickerView.setMaxActiveMonth(maxActivieMonth);
         pickerView.setStartYear(mSetStartYear);
+
+        pickerView.setFirstDayOfWeek(firstDayOfWeek);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy", Locale.KOREA);
         Date currentTime = new Date();
@@ -190,7 +297,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         pickerView.setController(this);
 
 
-        rl_done_btn.setOnClickListener(new View.OnClickListener() {
+        tv_done_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if ((SELECT_START_DATE == null || SELECT_START_DATE.equals("")) && (SELECT_END_DATE == null || SELECT_END_DATE.equals(""))) {
@@ -222,7 +329,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             }
         });
 
-        rl_reset_btn.setOnClickListener(new View.OnClickListener() {
+        tv_reset_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SELECT_START_DATE = "";
@@ -261,7 +368,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             String start_day_str = String.format("%02d", day);
             String startSetDate = year + start_month_str + start_day_str;
 
-            String startDateDay = AirCalendarUtils.getDateDay(startSetDate, "yyyyMMdd");
+            String startDateDay = AirCalendarUtils.getDateDay(this, startSetDate, "yyyyMMdd", firstDayOfWeek);
 
             tv_start_date.setText(year + "-" + start_month_str + "-" + start_day_str + " " + startDateDay);
             tv_start_date.setTextColor(0xff4a4a4a);
@@ -291,7 +398,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             String start_day_str = String.format("%02d", start_day_int);
 
             String startSetDate = cl.get(Calendar.YEAR) + start_month_str + start_day_str;
-            String startDateDay = AirCalendarUtils.getDateDay(startSetDate, "yyyyMMdd");
+            String startDateDay = AirCalendarUtils.getDateDay(this, startSetDate, "yyyyMMdd", firstDayOfWeek);
             String startDate = cl.get(Calendar.YEAR) + "-" + start_month_str + "-" + start_day_str;
 
             cl.setTimeInMillis(selectedDays.getLast().getDate().getTime());
@@ -305,7 +412,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             String end_day_str = String.format("%02d", end_day_int);
 
             String endSetDate = cl.get(Calendar.YEAR) + end_month_str + end_day_str;
-            String endDateDay = AirCalendarUtils.getDateDay(endSetDate, "yyyyMMdd");
+            String endDateDay = AirCalendarUtils.getDateDay(this, endSetDate, "yyyyMMdd", firstDayOfWeek);
             String endDate = cl.get(Calendar.YEAR) + "-" + end_month_str + "-" + end_day_str;
 
             tv_start_date.setText(startDate + " " + startDateDay);
