@@ -1,7 +1,7 @@
 /***********************************************************************************
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2017 LeeYongBeom
+ * Copyright (c) 2017 - 2019 LeeYongBeom( top6616@gmail.com )
  * https://github.com/yongbeam
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
