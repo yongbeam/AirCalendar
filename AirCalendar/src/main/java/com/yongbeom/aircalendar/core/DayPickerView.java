@@ -1,7 +1,7 @@
 /***********************************************************************************
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2017 LeeYongBeom
+ * Copyright (c) 2017 - 2019 LeeYongBeom( top6616@gmail.com )
  * https://github.com/yongbeam
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -47,6 +47,7 @@ public class DayPickerView extends RecyclerView {
     protected boolean isMonthDayLabels = false;
     protected boolean isSingleSelect = false;
     protected int mSetStartYear = -1;
+    protected int mFirstDayOfWeek;
     protected ArrayList<String> mBookingDates;
 
     private TypedArray typedArray;
@@ -109,6 +110,10 @@ public class DayPickerView extends RecyclerView {
         this.mSetStartYear = startYear;
     }
 
+    public void setFirstDayOfWeek(int firstDayOfWeek) {
+        this.mFirstDayOfWeek = firstDayOfWeek;
+    }
+
     public void init(Context paramContext) {
         setLayoutManager(new LinearLayoutManager(paramContext));
         mContext = paramContext;
@@ -117,7 +122,7 @@ public class DayPickerView extends RecyclerView {
 
     protected void setUpAdapter() {
         if (mAdapter == null) {
-            mAdapter = new AirMonthAdapter(getContext(), mController, typedArray, isBooking, isMonthDayLabels, isSingleSelect, mBookingDates, mSelectModel, mMaxActiveMonth, mSetStartYear);
+            mAdapter = new AirMonthAdapter(getContext(), mController, typedArray, isBooking, isMonthDayLabels, isSingleSelect, mBookingDates, mSelectModel, mMaxActiveMonth, mSetStartYear, mFirstDayOfWeek);
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -151,8 +156,6 @@ public class DayPickerView extends RecyclerView {
     public ArrayList<String> getBookingDates() {
         return this.mBookingDates;
     }
-
-    ;
 
     protected DatePickerController getController() {
         return mController;

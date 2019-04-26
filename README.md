@@ -1,5 +1,5 @@
-## [한국어]
-[한국어로 보기](http://mytalkhome.tistory.com/881) 
+## [Korean]
+[View](http://mytalkhome.tistory.com/881)
 
 ## [English]
 # AirCalendar
@@ -48,6 +48,21 @@ Airbnb-style calendar
         intent.setStartDate(yyyy , MM , dd); // int
         intent.setEndDate(yyyy , MM , dd); // int
         intent.isMonthLabels(false);
+        intent.setSelectButtonText("Select"); //the select button text
+        intent.setResetBtnText("Reset"); //the reset button text
+        intent.setWeekStart(Calendar.MONDAY);
+        intent.setWeekDaysLanguage(AirCalendarIntent.Language.EN); //language for the weekdays
+	
+        ArrayList<String> weekDay = new ArrayList<>();
+        weekDay.add("M");
+        weekDay.add("T");
+        weekDay.add("W");
+        weekDay.add("T");
+        weekDay.add("F");
+        weekDay.add("S");
+        weekDay.add("S");
+        intent.setCustomWeekDays(weekDay); //custom weekdays
+	
         startActivityForResult(intent, REQUEST_CODE);
 ```
 
@@ -126,9 +141,14 @@ CalendarListview is fully customizable:
 >* [CalendarListview](https://github.com/traex/CalendarListview)
 
 
+## Contributions
+>* [Adrian-Alexandru Coman](https://github.com/adriancoman)
+>* [IMLUNCH](https://github.com/jhamin0511)
+
+
 # License
 
-Copyright © 2017 - 2018 copyright YongBeomLee
+Copyright © 2017 - 2019 copyright YongBeomLee
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
