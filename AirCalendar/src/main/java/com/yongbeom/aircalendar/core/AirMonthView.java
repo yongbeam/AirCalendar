@@ -101,6 +101,7 @@ class AirMonthView extends View {
     protected int mSelectedDaysColor;
     protected int mWeekDayLineColor;
     protected int mWeekEndColor;
+    protected int mOldDayNumTextColor;
 
     private final StringBuilder mStringBuilder;
 
@@ -157,14 +158,15 @@ class AirMonthView extends View {
         mMonthTitleTypeface = resources.getString(R.string.sans_serif);
         mCurrentDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorCurrentDay, resources.getColor(R.color.normal_day));
         mMonthTextColor = typedArray.getColor(R.styleable.DayPickerView_colorMonthName, resources.getColor(R.color.colorMonthTextColor));
-        mDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorDayName, resources.getColor(R.color.normal_day));
+        mDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorDayName, resources.getColor(R.color.selected_day_text));
         mDayNumColor = typedArray.getColor(R.styleable.DayPickerView_colorNormalDay, resources.getColor(R.color.normal_day));
         mPreviousDayColor = typedArray.getColor(R.styleable.DayPickerView_colorPreviousDay, resources.getColor(R.color.normal_day));
         mSelectedDaysBgColor = typedArray.getColor(R.styleable.DayPickerView_colorSelectedDayBackground, resources.getColor(R.color.selected_day_background));
-        mSelectedDaysColor = typedArray.getColor(R.styleable.DayPickerView_colorSelectedDayBackground, resources.getColor(R.color.selected_day_interval_text));
-        mMonthTitleBGColor = typedArray.getColor(R.styleable.DayPickerView_colorSelectedDayText, resources.getColor(R.color.selected_day_text));
+        mSelectedDaysColor = typedArray.getColor(R.styleable.DayPickerView_colorSelectedDayText, resources.getColor(R.color.selected_day_interval_text));
+        mMonthTitleBGColor = typedArray.getColor(R.styleable.DayPickerView_colorMonthName, resources.getColor(R.color.colorMonthTextColor));
         mWeekDayLineColor = typedArray.getColor(R.styleable.DayPickerView_colorWeekDayLineColor, resources.getColor(R.color.colorWeekDayLineColor));
         mWeekEndColor = typedArray.getColor(R.styleable.DayPickerView_colorWeekEndColor, resources.getColor(R.color.colorWeekEndColor));
+        mOldDayNumTextColor = typedArray.getColor(R.styleable.DayPickerView_colorOldDayColor, resources.getColor(R.color.color_old_day_text_color));
 
         mMonthPlus3 = (today.month) + 3;
 
@@ -356,7 +358,7 @@ class AirMonthView extends View {
             }
 
             if (mToday > day && mStartYear == -1) {
-                mMonthNumPaint.setColor(getResources().getColor(R.color.color_old_day_text_color));
+                mMonthNumPaint.setColor(mOldDayNumTextColor);
                 mMonthNumPaint.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             } else {
                 mMonthNumPaint.setColor(mDayNumColor);
@@ -365,7 +367,7 @@ class AirMonthView extends View {
 
             if (AirCalendarUtils.isWeekend(mYear + "-" + (mMonth + 1) + "-" + day)) {
                 if (mToday > day && mStartYear == -1) {
-                    mMonthNumPaint.setColor(getResources().getColor(R.color.color_old_day_text_color));
+                    mMonthNumPaint.setColor(mOldDayNumTextColor);
                 } else {
                     mMonthNumPaint.setColor(mWeekEndColor);
                 }
@@ -388,14 +390,14 @@ class AirMonthView extends View {
 
                 int compare = setThreeMonth.minusMonths(1).compareTo(getViewDate);
                 if (compare == 0 || compare == -1) {
-                    mMonthNumPaint.setColor(getResources().getColor(R.color.color_old_day_text_color));
+                    mMonthNumPaint.setColor(mOldDayNumTextColor);
                     mMonthNumPaint.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
                 }
             }
 
             if (isShowBooking) {
                 if (mMonth < (mMonth + 3)) {
-                    mMonthNumPaint.setColor(getResources().getColor(R.color.color_old_day_text_color));
+                    mMonthNumPaint.setColor(mOldDayNumTextColor);
                     mMonthNumPaint.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
                 } else {
                     mMonthNumPaint.setColor(mDayNumColor);
@@ -415,7 +417,7 @@ class AirMonthView extends View {
 
                         String BOOKING_DATE = mYear + "-" + month_str + "-" + day_str;
                         if (bookingDateArray.get(i).equals(BOOKING_DATE)) {
-                            mMonthNumPaint.setColor(getResources().getColor(R.color.color_old_day_text_color));
+                            mMonthNumPaint.setColor(mOldDayNumTextColor);
                             mMonthNumPaint.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
                         }
                     }
@@ -423,7 +425,7 @@ class AirMonthView extends View {
             }
 
             if ((mMonth == mSelectedBeginMonth && mSelectedBeginDay == day && mSelectedBeginYear == mYear) || (mMonth == mSelectedLastMonth && mSelectedLastDay == day && mSelectedLastYear == mYear)) {
-                mMonthNumPaint.setColor(mMonthTitleBGColor);
+                mMonthNumPaint.setColor(mSelectedDaysColor);
             }
 
             if ((mSelectedBeginDay != -1 && mSelectedLastDay != -1) && (mSelectedLastMonth != mSelectedBeginMonth || mSelectedBeginDay != mSelectedLastDay) && (mMonth == mSelectedBeginMonth && mSelectedBeginDay == day && mSelectedBeginYear == mYear)) {

@@ -26,11 +26,12 @@ package com.yongbeom.aircalendar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.yongbeom.aircalendar.core.AirCalendarIntent;
 import com.yongbeom.aircalendar.core.AirMonthAdapter;
@@ -48,8 +49,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 
 public class AirCalendarDatePickerActivity extends AppCompatActivity implements DatePickerController {
@@ -229,7 +228,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
                 if (weekDay > 6) {
                     weekDay -= 7;
                 }
-                Log.d("DOW", week + "/" + weekDay+":" + weekDays.get(weekDay));
+                Log.d("DOW", week + "/" + weekDay + ":" + weekDays.get(weekDay));
                 switch (week) {
                     case 0:
                         tv_day_one.setText(weekDays.get(weekDay));

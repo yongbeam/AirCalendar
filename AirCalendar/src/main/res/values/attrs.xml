@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <declare-styleable name="DayPickerView">
         <attr name="colorCurrentDay" format="color" />
@@ -11,6 +11,7 @@
         <attr name="colorNormalDay" format="color" />
         <attr name="colorMonthName" format="color" />
         <attr name="colorDayName" format="color" />
+        <attr name="colorOldDayColor" format="color" />
         <attr name="textSizeDay" format="dimension" />
         <attr name="textSizeMonth" format="dimension" />
         <attr name="textSizeDayName" format="dimension" />
