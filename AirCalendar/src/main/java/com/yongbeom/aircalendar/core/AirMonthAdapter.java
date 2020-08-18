@@ -371,18 +371,16 @@ public class AirMonthAdapter extends RecyclerView.Adapter<AirMonthAdapter.ViewHo
             return calendar.getTime();
         }
 
+        @NonNull
         @Override
         public String toString() {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("{ year: ");
-            stringBuilder.append(year);
-            stringBuilder.append(", month: ");
-            stringBuilder.append(month);
-            stringBuilder.append(", day: ");
-            stringBuilder.append(day);
-            stringBuilder.append(" }");
-
-            return stringBuilder.toString();
+            return "{ year: " +
+                    year +
+                    ", month: " +
+                    month +
+                    ", day: " +
+                    day +
+                    " }";
         }
     }
 
