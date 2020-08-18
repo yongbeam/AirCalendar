@@ -24,6 +24,7 @@
  ***********************************************************************************/
 package com.yongbeom.aircalendar;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +41,8 @@ import com.yongbeom.aircalendar.core.DayPickerView;
 import com.yongbeom.aircalendar.core.SelectModel;
 import com.yongbeom.aircalendar.core.util.AirCalendarUtils;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
@@ -50,9 +53,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static java.util.Objects.requireNonNull;
 
 public class AirCalendarDatePickerActivity extends AppCompatActivity implements DatePickerController {
-
     public final static String EXTRA_FLAG = "FLAG";
     public final static String EXTRA_IS_BOOIKNG = "IS_BOOING";
     public final static String EXTRA_IS_SELECT = "IS_SELECT";
@@ -83,24 +86,10 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     public final static String RESULT_TYPE = "result_type";
     public final static String RESULT_STATE = "result_state";
 
-    private DayPickerView pickerView;
+    private RelativeLayout rl_checkout_select_info_popup;
     private TextView tv_start_date;
     private TextView tv_end_date;
     private TextView tv_popup_msg;
-    private TextView tv_done_btn;
-    private TextView tv_reset_btn;
-
-    private TextView tv_day_one;
-    private TextView tv_day_two;
-    private TextView tv_day_three;
-    private TextView tv_day_four;
-    private TextView tv_day_five;
-    private TextView tv_day_six;
-    private TextView tv_day_seven;
-
-    private RelativeLayout rl_popup_select_checkout_info_ok;
-    private RelativeLayout rl_checkout_select_info_popup;
-    private RelativeLayout rl_iv_back_btn_bg;
 
     private String SELECT_START_DATE = "";
     private String SELECT_END_DATE = "";
@@ -133,6 +122,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.aicalendar_activity_date_picker);
+        JodaTimeAndroid.init(this);
 
         Intent getData = getIntent();
         FLAG = getData.getStringExtra(EXTRA_FLAG) != null ? getData.getStringExtra(EXTRA_FLAG) : "all";
@@ -161,7 +151,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
         if (getIntent().hasExtra(CUSTOM_WEEK_ABREVIATIONS)) {
             weekDays.clear();
-            weekDays.addAll(getIntent().getStringArrayListExtra(CUSTOM_WEEK_ABREVIATIONS));
+            weekDays.addAll(requireNonNull(getIntent().getStringArrayListExtra(CUSTOM_WEEK_ABREVIATIONS)));
             AirCalendarUtils.setWeekdays(weekDays);
         }
 
@@ -174,24 +164,25 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void init() {
-        tv_done_btn = findViewById(R.id.rl_done_btn);
+        TextView tv_done_btn = findViewById(R.id.rl_done_btn);
         tv_start_date = findViewById(R.id.tv_start_date);
         tv_end_date = findViewById(R.id.tv_end_date);
         tv_popup_msg = findViewById(R.id.tv_popup_msg);
         rl_checkout_select_info_popup = findViewById(R.id.rl_checkout_select_info_popup);
-        tv_reset_btn = findViewById(R.id.rl_reset_btn);
-        rl_popup_select_checkout_info_ok = findViewById(R.id.rl_popup_select_checkout_info_ok);
+        TextView tv_reset_btn = findViewById(R.id.rl_reset_btn);
+        RelativeLayout rl_popup_select_checkout_info_ok = findViewById(R.id.rl_popup_select_checkout_info_ok);
         rl_checkout_select_info_popup = findViewById(R.id.rl_checkout_select_info_popup);
-        rl_iv_back_btn_bg = findViewById(R.id.rl_iv_back_btn_bg);
+        RelativeLayout rl_iv_back_btn_bg = findViewById(R.id.rl_iv_back_btn_bg);
 
-        tv_day_one = findViewById(R.id.tv_day_one);
-        tv_day_two = findViewById(R.id.tv_day_two);
-        tv_day_three = findViewById(R.id.tv_day_three);
-        tv_day_four = findViewById(R.id.tv_day_four);
-        tv_day_five = findViewById(R.id.tv_day_five);
-        tv_day_six = findViewById(R.id.tv_day_six);
-        tv_day_seven = findViewById(R.id.tv_day_seven);
+        TextView tv_day_one = findViewById(R.id.tv_day_one);
+        TextView tv_day_two = findViewById(R.id.tv_day_two);
+        TextView tv_day_three = findViewById(R.id.tv_day_three);
+        TextView tv_day_four = findViewById(R.id.tv_day_four);
+        TextView tv_day_five = findViewById(R.id.tv_day_five);
+        TextView tv_day_six = findViewById(R.id.tv_day_six);
+        TextView tv_day_seven = findViewById(R.id.tv_day_seven);
 
         if (getIntent().hasExtra(SELECT_TEXT)) {
             tv_done_btn.setText(getIntent().getStringExtra(SELECT_TEXT));
@@ -257,7 +248,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
 
         }
 
-        pickerView = findViewById(R.id.pickerView);
+        DayPickerView pickerView = findViewById(R.id.pickerView);
         pickerView.setIsMonthDayLabel(isMonthLabel);
         pickerView.setIsSingleSelect(isSingleSelect);
         pickerView.setMaxActiveMonth(maxActivieMonth);
@@ -273,7 +264,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             BASE_YEAR = maxYear;
         } else {
             // default : now year + 2 year
-            BASE_YEAR = Integer.valueOf(dTime) + 2;
+            BASE_YEAR = Integer.parseInt(dTime) + 2;
         }
 
         if (dates != null && dates.size() != 0 && isBooking) {
@@ -292,65 +283,47 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
             selectDate.setLastDay(eDay);
             pickerView.setSelected(selectDate);
         }
-
         pickerView.setController(this);
 
-
-        tv_done_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ((SELECT_START_DATE == null || SELECT_START_DATE.equals("")) && (SELECT_END_DATE == null || SELECT_END_DATE.equals(""))) {
-                    SELECT_START_DATE = "";
-                    SELECT_END_DATE = "";
-                } else {
-                    if (SELECT_START_DATE == null || SELECT_START_DATE.equals("")) {
-                        tv_popup_msg.setText("Please select all dates.");
-                        rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
-                        return;
-                    } else if (SELECT_END_DATE == null || SELECT_END_DATE.equals("")) {
-                        tv_popup_msg.setText("Please select all dates.");
-                        rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
-                        return;
-                    }
-                }
-
-
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra(RESULT_SELECT_START_DATE, SELECT_START_DATE);
-                resultIntent.putExtra(RESULT_SELECT_END_DATE, SELECT_END_DATE);
-                resultIntent.putExtra(RESULT_SELECT_START_VIEW_DATE, tv_start_date.getText().toString());
-                resultIntent.putExtra(RESULT_SELECT_END_VIEW_DATE, tv_end_date.getText().toString());
-                resultIntent.putExtra(RESULT_FLAG, FLAG);
-                resultIntent.putExtra(RESULT_TYPE, FLAG);
-                resultIntent.putExtra(RESULT_STATE, "done");
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
-        });
-
-        tv_reset_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        tv_done_btn.setOnClickListener(v -> {
+            if ((SELECT_START_DATE == null || SELECT_START_DATE.equals("")) && (SELECT_END_DATE == null || SELECT_END_DATE.equals(""))) {
                 SELECT_START_DATE = "";
                 SELECT_END_DATE = "";
-                setContentView(R.layout.aicalendar_activity_date_picker);
-                init();
+            } else {
+                if (SELECT_START_DATE == null || SELECT_START_DATE.equals("")) {
+                    tv_popup_msg.setText("Please select all dates.");
+                    rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
+                    return;
+                } else if (SELECT_END_DATE == null || SELECT_END_DATE.equals("")) {
+                    tv_popup_msg.setText("Please select all dates.");
+                    rl_checkout_select_info_popup.setVisibility(View.VISIBLE);
+                    return;
+                }
             }
+
+
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(RESULT_SELECT_START_DATE, SELECT_START_DATE);
+            resultIntent.putExtra(RESULT_SELECT_END_DATE, SELECT_END_DATE);
+            resultIntent.putExtra(RESULT_SELECT_START_VIEW_DATE, tv_start_date.getText().toString());
+            resultIntent.putExtra(RESULT_SELECT_END_VIEW_DATE, tv_end_date.getText().toString());
+            resultIntent.putExtra(RESULT_FLAG, FLAG);
+            resultIntent.putExtra(RESULT_TYPE, FLAG);
+            resultIntent.putExtra(RESULT_STATE, "done");
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
 
-        rl_popup_select_checkout_info_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rl_checkout_select_info_popup.setVisibility(View.GONE);
-            }
+        tv_reset_btn.setOnClickListener(v -> {
+            SELECT_START_DATE = "";
+            SELECT_END_DATE = "";
+            setContentView(R.layout.aicalendar_activity_date_picker);
+            init();
         });
 
-        rl_iv_back_btn_bg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        rl_popup_select_checkout_info_ok.setOnClickListener(v -> rl_checkout_select_info_popup.setVisibility(View.GONE));
+
+        rl_iv_back_btn_bg.setOnClickListener(v -> finish());
     }
 
     @Override
@@ -358,6 +331,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         return BASE_YEAR;
     }
 
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
     @Override
     public void onDayOfMonthSelected(int year, int month, int day) {
         // TODO Single Select Event
@@ -380,6 +354,7 @@ public class AirCalendarDatePickerActivity extends AppCompatActivity implements 
         }
     }
 
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
     @Override
     public void onDateRangeSelected(AirMonthAdapter.SelectedDays<AirMonthAdapter.CalendarDay> selectedDays) {
 

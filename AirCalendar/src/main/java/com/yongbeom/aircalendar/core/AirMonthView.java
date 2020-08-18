@@ -24,6 +24,7 @@
  ***********************************************************************************/
 package com.yongbeom.aircalendar.core;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -54,6 +55,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+@SuppressLint("ViewConstructor")
 class AirMonthView extends View {
     private String TAG = "AirMonthView";
 
@@ -136,7 +138,6 @@ class AirMonthView extends View {
     private OnDayClickListener mOnDayClickListener;
     private boolean isShowBooking = false;
     private boolean isMonthDayLabels = false;
-    private Context mContext;
     private ArrayList<String> bookingDateArray;
 
     public AirMonthView(Context context, TypedArray typedArray, boolean showBooking, boolean monthDayLabels, ArrayList<String> bookingdates, int maxActiveMonth, int startYear) {
@@ -144,7 +145,6 @@ class AirMonthView extends View {
 
         isMonthDayLabels = monthDayLabels;
         isShowBooking = showBooking;
-        mContext = context;
         bookingDateArray = bookingdates;
         mMaxActiveMonth = maxActiveMonth;
         mStartYear = startYear;
@@ -389,7 +389,7 @@ class AirMonthView extends View {
                 setThreeMonth = setThreeMonth.plusMonths(mMaxActiveMonth);
 
                 int compare = setThreeMonth.minusMonths(1).compareTo(getViewDate);
-                if (compare == 0 || compare == -1) {
+                if (compare == 0 || compare < 0) {
                     mMonthNumPaint.setColor(mOldDayNumTextColor);
                     mMonthNumPaint.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
                 }
@@ -599,6 +599,7 @@ class AirMonthView extends View {
         mWidth = w;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             AirMonthAdapter.CalendarDay calendarDay = getDayFromLocation(event.getX(), event.getY());
@@ -663,6 +664,7 @@ class AirMonthView extends View {
             try {
                 weekStart = mCalendar.getFirstDayOfWeek();
             } catch (RuntimeException e) {
+                e.printStackTrace();
             }
             mWeekStart = weekStart;
         }
@@ -685,9 +687,7 @@ class AirMonthView extends View {
         mOnDayClickListener = onDayClickListener;
     }
 
-    public static abstract interface OnDayClickListener {
-        public abstract void onDayClick(AirMonthView airMonthView, AirMonthAdapter.CalendarDay calendarDay);
+    public interface OnDayClickListener {
+        void onDayClick(AirMonthView airMonthView, AirMonthAdapter.CalendarDay calendarDay);
     }
-
-
 }

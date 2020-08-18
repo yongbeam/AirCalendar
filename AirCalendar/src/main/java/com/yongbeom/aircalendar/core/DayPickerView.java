@@ -26,9 +26,11 @@ package com.yongbeom.aircalendar.core;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.AttributeSet;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.AttributeSet;
 
 import com.yongbeom.aircalendar.R;
 
@@ -51,9 +53,7 @@ public class DayPickerView extends RecyclerView {
     protected ArrayList<String> mBookingDates;
 
     private TypedArray typedArray;
-    private OnScrollListener onScrollListener;
     private SelectModel mSelectModel = null;
-
 
     public DayPickerView(Context context) {
         this(context, null);
@@ -122,7 +122,19 @@ public class DayPickerView extends RecyclerView {
 
     protected void setUpAdapter() {
         if (mAdapter == null) {
-            mAdapter = new AirMonthAdapter(getContext(), mController, typedArray, isBooking, isMonthDayLabels, isSingleSelect, mBookingDates, mSelectModel, mMaxActiveMonth, mSetStartYear, mFirstDayOfWeek);
+            mAdapter = new AirMonthAdapter(
+                    getContext(),
+                    mController,
+                    typedArray,
+                    isBooking,
+                    isMonthDayLabels,
+                    isSingleSelect,
+                    mBookingDates,
+                    mSelectModel,
+                    mMaxActiveMonth,
+                    mSetStartYear,
+                    mFirstDayOfWeek
+            );
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -130,10 +142,9 @@ public class DayPickerView extends RecyclerView {
 
     protected void setUpListView() {
         setVerticalScrollBarEnabled(false);
-
-        onScrollListener = new OnScrollListener() {
+        OnScrollListener onScrollListener = new OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 final AirMonthView child = (AirMonthView) recyclerView.getChildAt(0);
                 if (child == null) {
